@@ -19,6 +19,7 @@ export default function Footer() {
             <li><Link href="/services" className="hover:text-violet-700">บริการดูดวง</Link></li>
             <li><Link href="/articles" className="hover:text-violet-700">บทความ</Link></li>
             <li><Link href="/contact" className="hover:text-violet-700">ติดต่อ</Link></li>
+            <li><Link href="/terms" className="hover:text-violet-700">ข้อตกลง</Link></li>
             <li><Link href="/privacy" className="hover:text-violet-700">นโยบายความเป็นส่วนตัว</Link></li>
           </ul>
         </div>

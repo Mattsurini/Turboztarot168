@@ -1,5 +1,5 @@
-import type { AvailableSlot } from "./types";
-import { fetchCalendarEvents, type RawEvent } from "./google-calendar";
+import type { AvailableSlot, RawEvent } from "./types";
+import { serviceRoleSupabase } from "./supabase";
 
 /** Bangkok's fixed UTC+7 offset in ms. */
 const TZ_OFFSET = 7 * 60 * 60 * 1000;
@@ -62,6 +62,28 @@ export type MonthSlots = {
 };
 
 /**
+ * Load availability windows from the database. Slots are carved from every
+ * open window, and any busy (open=false) window blocks the slots it overlaps,
+ * regardless of read order.
+ */
+export async function fetchAvailabilitySlots(start: Date, end: Date): Promise<RawEvent[]> {
+  const db = serviceRoleSupabase();
+  if (!db) throw new Error("Supabase not configured");
+  const { data, error } = await db
+    .from("availability_slots")
+    .select("start_at, end_at, open")
+    .gte("start_at", start.toISOString())
+    .lt("start_at", end.toISOString())
+    .order("start_at", { ascending: true });
+  if (error) throw error;
+  return (data || []).map((r) => ({
+    start: new Date(r.start_at),
+    end: new Date(r.end_at),
+    open: !!r.open,
+  }));
+}
+
+/**
  * Fetch and compute availability for a whole month.
  * Returns available:false instead of throwing when the calendar is
  * unconfigured or the Google API fails, so the UI can degrade gracefully.
@@ -73,7 +95,7 @@ export async function getMonthAvailability(
   const start = new Date(Date.UTC(year, month, 1, 0, 0, 0) - TZ_OFFSET); // Bangkok midnight, 1st
   const end = new Date(Date.UTC(year, month + 1, 1, 0, 0, 0) - TZ_OFFSET);
   try {
-    const events = await fetchCalendarEvents(start, end);
+    const events = await fetchAvailabilitySlots(start, end);
     const slots = computeAvailableSlots(events);
     const days: Record<string, AvailableSlot[]> = {};
     for (const s of slots) {
@@ -85,27 +107,5 @@ export async function getMonthAvailability(
     return { available: true, days };
   } catch {
     return { available: false, message: "ปฏิทินไม่พร้อมใช้งานในขณะนี้ กรุณาลองใหม่ภายหลัง" };
-  }
-}
-
-/**
- * Recheck whether a single chosen slot is still free (for the booking
- * confirm step). Returns free:false when the calendar is unavailable too,
- * so a booked-elsewhere slot is never presented as open.
- */
-export async function checkSlotFree(startIso: string): Promise<{ free: boolean; message?: string }> {
-  const slotMin = defaultSlotMin();
-  const t = new Date(startIso).getTime();
-  if (!Number.isFinite(t)) return { free: false };
-  // Fetch the whole Bangkok day containing the slot.
-  const dayStart = new Date(Math.floor((t + TZ_OFFSET) / 86400000) * 86400000 - TZ_OFFSET);
-  const dayEnd = new Date(dayStart.getTime() + 86400000);
-  try {
-    const events = await fetchCalendarEvents(dayStart, dayEnd);
-    const slots = computeAvailableSlots(events, slotMin);
-    const free = slots.some((s) => s.start === startIso);
-    return { free };
-  } catch {
-    return { free: false, message: "ไม่สามารถตรวจสอบคิวได้ กรุณาลองใหม่ภายหลัง" };
   }
 }

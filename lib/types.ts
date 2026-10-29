@@ -32,6 +32,13 @@ export type AvailableSlot = {
   end: string;
 };
 
+export type RawEvent = {
+  start: Date;
+  end: Date;
+  /** true = this window is open for bookings; false = busy/not available. */
+  open: boolean;
+};
+
 export type DayAvailability = {
   date: string; // YYYY-MM-DD
   slots: AvailableSlot[];

@@ -5,6 +5,7 @@ const links = [
   { href: "/services", label: "บริการดูดวง" },
   { href: "/articles", label: "บทความ" },
   { href: "/about", label: "เกี่ยวกับพี่หมอ" },
+  { href: "/terms", label: "ข้อตกลง" },
   { href: "/contact", label: "ติดต่อ" },
 ];
 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getMonthAvailability, checkSlotFree } from "@/lib/availability";
+import { getMonthAvailability } from "@/lib/availability";
 
 export const dynamic = "force-dynamic";
 
@@ -7,13 +7,6 @@ const TZ = 7 * 60 * 60 * 1000;
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-
-  // Revalidation mode: is this exact slot still free right now?
-  const start = searchParams.get("start");
-  if (start) {
-    const res = await checkSlotFree(start);
-    return NextResponse.json(res);
-  }
 
   const month = searchParams.get("month");
   let year: number;

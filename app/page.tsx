@@ -26,13 +26,12 @@ export default async function HomePage() {
       <section className="relative overflow-hidden bg-gradient-to-br from-[#221100] via-[#1a1a1a] to-black text-white">
         <div className="mx-auto max-w-6xl px-4 py-20 text-center sm:px-6 sm:py-28">
           <h1 className="text-4xl font-bold leading-tight sm:text-6xl">
-            เปิดใจ รับคำตอบ
-            <br />
-            ผ่าน <span className="text-amber-300">ไพ่ยิปซี</span>
+            Turboztarot168
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-white/80">
-            บริการดูดวงรายบุคคล ทั้งความรัก การงาน การเงิน พร้อมคำแนะนำที่นำไปใช้
-            ได้จริง จองคิวดูดวงและติดต่อผ่าน LINE ง่าย ๆ ได้เลย
+            การเล่าเรื่องของคุณมีผลต่อคำทำนายของเทอร์โบ
+            <br />
+            ยิ่งคุณเล่าเท่าไหร่ เทอร์โบยิ่งให้คุณเท่านั้น
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
@@ -84,7 +83,7 @@ export default async function HomePage() {
           <div className="text-center">
             <h2 className="text-3xl font-bold">เช็คคิวดูดวง</h2>
             <p className="mx-auto mt-3 max-w-2xl text-foreground/70">
-              เลือกบริการและช่วงเวลาที่สะดวก จากนั้นกด{" "}
+              เลือกบริการที่ชอบ จากนั้นกด{" "}
               “ติดต่อจองคิวดูดวงผ่าน LINE” เพื่อยืนยันกับพี่หมอโดยตรง คิวจะยืนยันเมื่อ
               พี่หมอตอบกลับเท่านั้น
             </p>

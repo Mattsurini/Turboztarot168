@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Service } from "@/lib/types";
 import { lineOaUrl, isLineConfigured } from "@/lib/site";
-import { formatDate, formatTime } from "@/lib/format";
 
 const TZ = 7 * 60 * 60 * 1000;
 const THAI_MONTHS = [
@@ -34,11 +33,9 @@ export default function BookingWidget({ services }: { services: Service[] }) {
   const [message, setMessage] = useState<string>("");
 
   const [selKey, setSelKey] = useState<string | null>(null);
-  const [sel, setSel] = useState<{ start: string; end: string } | null>(null);
   const [serviceId, setServiceId] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [checking, setChecking] = useState(false);
-  const [slotTaken, setSlotTaken] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -50,8 +47,6 @@ export default function BookingWidget({ services }: { services: Service[] }) {
         setMessage(d.message || "");
         setDays(d.days || {});
         setSelKey(null);
-        setSel(null);
-        setSlotTaken(false);
       })
       .catch(() => {
         if (cancelled) return;
@@ -87,34 +82,37 @@ export default function BookingWidget({ services }: { services: Service[] }) {
     return cells;
   }, [month, days]);
 
-  const selectedDaySlots = selKey ? (days?.[selKey] || []) : [];
   const selectedService = services.find((s) => s.id === serviceId);
 
+  const thaiDateFor = useCallback((iso: string) => {
+    const d = new Date(new Date(iso).getTime() + TZ);
+    return `${d.getUTCDate()} ${THAI_MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear() + 543}`;
+  }, []);
+
+  // No per-hour strip: booking is by day, the exact time is agreed on LINE.
+  // Re-fetch the live month first so a day the admin removed since load is
+  // not offered as bookable.
   const handleConfirm = useCallback(async () => {
-    if (!sel || slotTaken) return;
+    if (!selKey || checking) return;
     setChecking(true);
-    setSlotTaken(false);
+    setMessage("");
     try {
-      const r = await fetch(`/api/availability?start=${encodeURIComponent(sel.start)}`);
+      const r = await fetch(`/api/availability?month=${month}`);
       const d = await r.json();
-      setChecking(false);
-      if (!d.free) {
-        setSlotTaken(true);
+      if (!d.available || !d.days?.[selKey]?.length) {
+        setMessage("วันนี้คิวเต็มแล้ว กรุณาเลือกวันอื่น 🙏");
+        setChecking(false);
         return;
       }
-      const msg = `สวัสดีครับ/ค่ะ ขอจองคิวดูดวง${selectedService ? ` "${selectedService.name}"` : ""} วันที่ ${formatDate(sel.start)} เวลา ${formatTime(sel.start)} ชื่อ${name ? ` ${name}` : ""} ค่ะ`;
+      const day = `${selKey}T00:00:00+07:00`;
+      const msg = `สวัสดีครับ/ค่ะ ขอจองคิวดูดวง${selectedService ? ` "${selectedService.name}"` : ""} วันที่ ${thaiDateFor(day)} ชื่อ${name ? ` ${name}` : ""} ค่ะ`;
       window.location.href = lineOaUrl(msg);
     } catch {
+      setMessage("ไม่สามารถตรวจสอบคิวได้ กรุณาลองใหม่ในอีกสักครู่");
+    } finally {
       setChecking(false);
-      setSlotTaken(true);
     }
-  }, [sel, slotTaken, selectedService, name]);
-
-  const bkkIso = (iso: string) => new Date(new Date(iso).getTime() + TZ);
-  const thaiDateFor = (iso: string) => {
-    const d = bkkIso(iso);
-    return `${d.getUTCDate()} ${THAI_MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear() + 543}`;
-  };
+  }, [selKey, checking, month, selectedService, name, thaiDateFor]);
 
   if (!services.length) {
     return (
@@ -125,7 +123,6 @@ export default function BookingWidget({ services }: { services: Service[] }) {
   return (
     <div className="rounded-2xl border border-gold/25 bg-[#121212] p-6 shadow-sm sm:p-8">
       <h2 className="text-2xl font-bold">เช็คคิวดูดวง</h2>
-
 
       {/* Month navigation */}
       <div className="mt-6 flex items-center justify-between">
@@ -163,7 +160,7 @@ export default function BookingWidget({ services }: { services: Service[] }) {
         <p className="mt-4 text-sm text-foreground/50">กำลังโหลดคิว...</p>
       )}
 
-      {/* Calendar grid */}
+      {/* Calendar grid — clickable days are those with free slots */}
       {available && (
         <div className="mt-4 grid grid-cols-7 gap-1 text-center">
           {THAI_DAY_HEADERS.map((h) => (
@@ -179,11 +176,7 @@ export default function BookingWidget({ services }: { services: Service[] }) {
                 key={cell.key}
                 type="button"
                 disabled={!cell.has}
-                onClick={() => {
-                  setSelKey(cell.key);
-                  setSel(null);
-                  setSlotTaken(false);
-                }}
+                onClick={() => setSelKey(cell.key)}
                 className={`relative flex h-10 items-center justify-center rounded-lg text-sm transition ${
                   cell.isToday ? "font-bold text-violet-700" : ""
                 } ${
@@ -201,42 +194,8 @@ export default function BookingWidget({ services }: { services: Service[] }) {
         </div>
       )}
 
-      {/* Slot list */}
+      {/* Day booking (no per-hour strip; time agreed on LINE) */}
       {available && selKey && (
-        <div className="mt-6">
-          <p className="text-sm font-medium">
-            วันที่ {thaiDateFor(`${selKey}T00:00:00+07:00`)}
-          </p>
-          {selectedDaySlots.length === 0 ? (
-            <p className="mt-2 text-sm text-foreground/60">
-              วันนี้ไม่มีช่วงเวลาว่างเหลือแล้ว
-            </p>
-          ) : (
-            <div className="mt-2 flex flex-wrap gap-2">
-              {selectedDaySlots.map((s) => (
-                <button
-                  key={s.start}
-                  type="button"
-                  onClick={() => {
-                    setSel({ start: s.start, end: s.end });
-                    setSlotTaken(false);
-                  }}
-                  className={`rounded-lg border px-4 py-2 text-sm transition ${
-                    sel?.start === s.start
-                      ? "border-violet-700 bg-violet-700 text-black"
-                      : "border-gold/30 bg-[#121212] hover:border-violet-300"
-                  }`}
-                >
-                  {formatTime(s.start)} – {formatTime(s.end)}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Name + summary + LINE */}
-      {available && sel && (
         <div className="mt-6 rounded-xl border border-gold/30 p-4">
           <label className="text-sm font-medium">
             ชื่อหรือชื่อเล่นของคุณ
@@ -253,17 +212,12 @@ export default function BookingWidget({ services }: { services: Service[] }) {
             <p className="font-semibold text-violet-800">สรุปการจองของคุณ</p>
             <ul className="mt-2 space-y-1 text-foreground/80">
               <li>บริการ: {selectedService?.name || "—"}</li>
-              <li>วันที่: {thaiDateFor(sel.start)}</li>
-              <li>เวลา: {formatTime(sel.start)} – {formatTime(sel.end)}</li>
+              <li>วันที่: {selKey ? thaiDateFor(`${selKey}T00:00:00+07:00`) : "—"}</li>
               <li>ชื่อ: {name || "—"}</li>
             </ul>
           </div>
 
-          {slotTaken && (
-            <p className="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">
-              ขออภัย คิวที่เลือกถูกจองแล้ว กรุณาเลือกช่วงเวลาอื่น
-            </p>
-          )}
+          {message && <p className="mt-3 text-sm font-medium text-amber-700">{message}</p>}
 
           {!isLineConfigured() ? (
             <p className="mt-3 text-sm text-foreground/50">
@@ -273,7 +227,7 @@ export default function BookingWidget({ services }: { services: Service[] }) {
             <button
               type="button"
               onClick={handleConfirm}
-              disabled={checking || slotTaken}
+              disabled={checking}
               className="mt-4 w-full rounded-full bg-[#06c755] px-6 py-3 font-semibold text-white transition hover:brightness-95 disabled:opacity-60"
             >
               {checking ? "กำลังตรวจสอบคิว..." : "ติดต่อจองคิวดูดวงผ่าน LINE"}
@@ -281,7 +235,7 @@ export default function BookingWidget({ services }: { services: Service[] }) {
           )}
           <p className="mt-3 text-xs text-foreground/50">
             การกดปุ่มนี้จะเปิด LINE พร้อมข้อความสำเร็จรูปให้คุณตรวจสอบและกดส่งเอง
-            คิวจะยืนยันเมื่อพี่หมอตอบกลับเท่านั้น
+            คิวจะยืนยันเมื่อพี่หมอตอบกลับเท่านั้น (นัดเวลาที่แน่นอนผ่าน LINE โดยตรง)
           </p>
         </div>
       )}
