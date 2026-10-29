@@ -226,7 +226,7 @@ export default async function ServiceDetailPage({ params }: Props) {
           href={lineOaUrl(lineMsg)}
           className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#06c755] px-6 py-3 font-semibold text-white transition hover:brightness-95"
         >
-          เช็คตารางคิวบริการนี้ผ่าน LINE
+          จองคิวบริการนี้ผ่าน LINE
         </a>
       </div>
     </section>
