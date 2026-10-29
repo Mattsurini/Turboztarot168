@@ -82,7 +82,7 @@ export default async function HomePage() {
       <section className="bg-gradient-to-br from-amber-50 to-violet-50 py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="text-center">
-            <h2 className="text-3xl font-bold">จองคิวดูดวง</h2>
+            <h2 className="text-3xl font-bold">เช็คคิวดูดวง</h2>
             <p className="mx-auto mt-3 max-w-2xl text-foreground/70">
               เลือกบริการและช่วงเวลาที่สะดวก จากนั้นกด{" "}
               “ติดต่อจองคิวดูดวงผ่าน LINE” เพื่อยืนยันกับพี่หมอโดยตรง คิวจะยืนยันเมื่อ

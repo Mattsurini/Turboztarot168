@@ -124,7 +124,7 @@ export default function BookingWidget({ services }: { services: Service[] }) {
 
   return (
     <div className="rounded-2xl border border-gold/25 bg-[#121212] p-6 shadow-sm sm:p-8">
-      <h2 className="text-2xl font-bold">จองคิวดูดวง</h2>
+      <h2 className="text-2xl font-bold">เช็คคิวดูดวง</h2>
 
 
       {/* Month navigation */}
