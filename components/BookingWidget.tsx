@@ -124,7 +124,7 @@ export default function BookingWidget({ services }: { services: Service[] }) {
 
   return (
     <div className="rounded-2xl border border-gold/25 bg-[#121212] p-6 shadow-sm sm:p-8">
-      <h2 className="text-2xl font-bold">จองคิว</h2>
+      <h2 className="text-2xl font-bold">จองคิวดูดวง</h2>
 
 
       {/* Month navigation */}
@@ -276,7 +276,7 @@ export default function BookingWidget({ services }: { services: Service[] }) {
               disabled={checking || slotTaken}
               className="mt-4 w-full rounded-full bg-[#06c755] px-6 py-3 font-semibold text-white transition hover:brightness-95 disabled:opacity-60"
             >
-              {checking ? "กำลังตรวจสอบคิว..." : "ติดต่อจองคิวผ่าน LINE"}
+              {checking ? "กำลังตรวจสอบคิว..." : "ติดต่อจองคิวดูดวงผ่าน LINE"}
             </button>
           )}
           <p className="mt-3 text-xs text-foreground/50">

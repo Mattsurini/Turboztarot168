@@ -23,7 +23,7 @@ export default function Footer() {
           </ul>
         </div>
         <div>
-          <h4 className="text-sm font-semibold">จองคิวผ่าน LINE</h4>
+          <h4 className="text-sm font-semibold">จองคิวดูดวงผ่าน LINE</h4>
           <a
             href={lineOaUrl("สวัสดีครับ/ค่ะ ขอจองคิวดูดวงค่ะ")}
             className="mt-2 inline-block rounded-full bg-[#06c755] px-4 py-2 text-sm font-medium text-white transition hover:brightness-95"

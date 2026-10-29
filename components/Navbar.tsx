@@ -35,7 +35,7 @@ export default function Navbar() {
               href="/services"
               className="rounded-full bg-violet-700 px-4 py-2 text-black transition hover:bg-violet-800"
             >
-              จองคิว
+              จองคิวดูดวง
             </Link>
           </li>
         </ul>

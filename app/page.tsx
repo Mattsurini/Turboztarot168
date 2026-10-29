@@ -32,7 +32,7 @@ export default async function HomePage() {
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg text-white/80">
             บริการดูดวงรายบุคคล ทั้งความรัก การงาน การเงิน พร้อมคำแนะนำที่นำไปใช้
-            ได้จริง จองคิวและติดต่อผ่าน LINE ง่าย ๆ ได้เลย
+            ได้จริง จองคิวดูดวงและติดต่อผ่าน LINE ง่าย ๆ ได้เลย
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
@@ -82,10 +82,10 @@ export default async function HomePage() {
       <section className="bg-gradient-to-br from-amber-50 to-violet-50 py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="text-center">
-            <h2 className="text-3xl font-bold">จองคิว</h2>
+            <h2 className="text-3xl font-bold">จองคิวดูดวง</h2>
             <p className="mx-auto mt-3 max-w-2xl text-foreground/70">
               เลือกบริการและช่วงเวลาที่สะดวก จากนั้นกด{" "}
-              “ติดต่อจองคิวผ่าน LINE” เพื่อยืนยันกับพี่หมอโดยตรง คิวจะยืนยันเมื่อ
+              “ติดต่อจองคิวดูดวงผ่าน LINE” เพื่อยืนยันกับพี่หมอโดยตรง คิวจะยืนยันเมื่อ
               พี่หมอตอบกลับเท่านั้น
             </p>
           </div>

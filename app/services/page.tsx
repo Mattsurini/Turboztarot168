@@ -13,7 +13,7 @@ export default async function ServicesPage() {
     <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
       <h1 className="text-4xl font-bold">บริการดูดวง</h1>
       <p className="mt-3 max-w-2xl text-foreground/60">
-        เลือกบริการที่ตรงกับคำถามของคุณ จากนั้นจองคิวผ่าน LINE เพื่อยืนยันกับพี่หมอ
+        เลือกบริการที่ตรงกับคำถามของคุณ จากนั้นจองคิวดูดวงผ่าน LINE เพื่อยืนยันกับพี่หมอ
       </p>
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((s) => (
