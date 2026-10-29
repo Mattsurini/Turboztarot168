@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --void-black: #000000;
+  --solar-gold: #ffb800;
+  --ember-orange: #cc7a00;
+  --bone-ivory: #d2b48c;
+  --blood-crimson: #b22222;
+  --bg-gradient: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #221100 100%);
+  --card-bg: #0f0f0f;
+
+  --background: var(--bg-gradient);
+  --foreground: var(--bone-ivory);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-gold: var(--solar-gold);
+  --color-ember: var(--ember-orange);
+  --color-ivory: var(--bone-ivory);
+  --color-crimson: var(--blood-crimson);
+  --color-void: var(--void-black);
+  --color-card: var(--card-bg);
+
+  --font-sans: var(--font-inter), "Inter", "Sarabun", "Noto Sans Thai",
+    "Tahoma", system-ui, sans-serif;
+  --font-display: var(--font-serif-thai), "Noto Serif Thai", "Noto Sans Thai",
+    "Georgia", serif;
+  --font-mono: ui-monospace, "SFMono-Regular", monospace;
+
+  /* Remap the accent scales used across components to the brand palette */
+  --color-violet-50: #1b1608;
+  --color-violet-100: #2a2108;
+  --color-violet-200: #3b2e0b;
+  --color-violet-300: #6a5310;
+  --color-violet-400: #8a6a16;
+  --color-violet-500: #c99a1a;
+  --color-violet-600: #f0b312;
+  --color-violet-700: #ffb800;
+  --color-violet-800: #cc7a00;
+  --color-violet-900: #7a4700;
+
+  --color-amber-50: #1b1608;
+  --color-amber-100: #2a2108;
+  --color-amber-200: #6a5310;
+  --color-amber-300: #ffb800;
+  --color-amber-400: #ffb800;
+  --color-amber-500: #e0a912;
+  --color-amber-600: #cc7a00;
+  --color-amber-700: #b8860b;
+  --color-amber-800: #e0a912;
+  --color-amber-900: #7a4700;
+
+  --color-slate-900: #0a0a0a;
+}
+
+* {
+  border-color: rgba(255, 184, 0, 0.2);
+}
+
+@layer base {
+  body {
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    color: var(--solar-gold);
+  }
+  /* Brand form controls on the dark theme */
+  input, select, textarea {
+    background: #181818;
+    color: var(--bone-ivory);
+  }
+  input::placeholder, textarea::placeholder {
+    color: rgba(210, 180, 140, 0.45);
+  }
+}
