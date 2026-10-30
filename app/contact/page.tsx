@@ -27,7 +27,7 @@ export default function ContactPage() {
           </li>
         </ul>
         <p className="mt-4 text-sm text-foreground/50">
-          เวลาทำการ: ตามช่วงเปิดรับคิวที่ประกาศในหน้าแรก
+          เวลาทำการ: รับคิวทุกวัน นัดวัน/เวลาแน่นอนผ่าน LINE
         </p>
       </div>
     </section>

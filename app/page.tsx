@@ -2,7 +2,6 @@ import Link from "next/link";
 import { getArticles, getServices } from "@/lib/data";
 import { siteCanonical, lineOaUrl } from "@/lib/site";
 import { formatThaiDate } from "@/lib/format";
-import BookingWidget from "@/components/BookingWidget";
 import ServicesSection from "@/components/ServicesSection";
 import JsonLd from "@/components/JsonLd";
 
@@ -22,48 +21,54 @@ export default async function HomePage() {
         }}
       />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#221100] via-[#1a1a1a] to-black text-white">
-        <div className="mx-auto max-w-6xl px-4 py-20 text-center sm:px-6 sm:py-28">
-          <h1 className="text-4xl font-bold leading-tight sm:text-6xl">
-            Turboztarot168
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg text-white/80">
-            การเล่าเรื่องของคุณมีผลต่อคำทำนายของเทอร์โบ
-            <br />
-            ยิ่งคุณเล่าเท่าไหร่ เทอร์โบยิ่งให้คุณเท่านั้น
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              href="/services"
-              className="rounded-full bg-amber-400 px-6 py-3 font-semibold text-slate-900 transition hover:bg-amber-300"
-            >
-              เลือกบริการดูดวง
-            </Link>
-            <a
-              href={lineOaUrl("สวัสดีครับ/ค่ะ ขอจองคิวดูดวงค่ะ")}
-              className="rounded-full bg-[#121212]/10 px-6 py-3 font-semibold text-white ring-1 ring-white/30 transition hover:bg-[#121212]/20"
-            >
-              สอบถามผ่าน LINE
-            </a>
+      {/* Hero — AetherOS ember front page */}
+      <section className="relative overflow-hidden border-b-2 border-gold/30 bg-paper">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_-10%,rgba(197,142,59,0.28),transparent_55%)]" />
+        <div className="flex flex-col items-center justify-center text-center">
+          <div className="relative mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 sm:py-20">
+            <h1 className="font-display text-5xl font-black tracking-[0.08em] text-ink sm:text-7xl [text-shadow:0_0_28px_rgba(197,142,59,0.55)]">
+              Turboz<span className="text-newsred">tarot</span>168
+            </h1>
+            <div className="mx-auto mt-5 max-w-xl border-y border-gold/25 py-2 text-xs tracking-[0.3em] text-inksoft">
+              ฉบับดูดวงออนไลน์ · โดย พี่หมอเทอร์โบ
+            </div>
+            <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-ink/85">
+              การเล่าเรื่องของคุณมีผลต่อคำทำนายของเทอร์โบ
+              <br />
+              ยิ่งคุณเล่าเท่าไหร่ เทอร์โบยิ่งให้คุณเท่านั้น
+            </p>
+            <div className="mt-9 flex flex-wrap justify-center gap-3">
+              <Link
+                href="/services"
+                className="bg-newsred px-7 py-3 font-bold text-[#0a0a0a] shadow-[0_3px_0_#8a5d24] transition hover:brightness-110"
+              >
+                เลือกบริการดูดวง
+              </Link>
+              <a
+                href={lineOaUrl("สวัสดีครับ/ค่ะ ขอจองคิวดูดวงค่ะ")}
+                className="border border-gold/50 bg-paper px-7 py-3 font-bold text-gold transition hover:bg-gold hover:text-[#0a0a0a]"
+              >
+                สอบถามผ่าน LINE
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Services */}
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="flex items-end justify-between">
+      {/* Services — the day's columns */}
+      <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
+        <div className="flex items-end justify-between border-b-2 border-ink pb-3">
           <div>
-            <h2 className="text-3xl font-bold">บริการดูดวง</h2>
-            <p className="mt-2 text-foreground/60">
+            <h2 className="font-display text-3xl font-bold">บริการดูดวง</h2>
+            <p className="mt-1 text-foreground/60">
               เลือกบริการที่ตรงกับคำถามของคุณ
             </p>
           </div>
           <Link
             href="/services"
-            className="text-sm font-medium text-violet-700"
+            className="text-sm font-bold text-newsred hover:text-violet-800"
           >
-            ดูทั้งหมด →
+            อ่านต่อ →
           </Link>
         </div>
         <div className="mt-8">
@@ -77,37 +82,18 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Booking / availability */}
-      <section className="bg-gradient-to-br from-amber-50 to-violet-50 py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold">เช็คคิวดูดวง</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-foreground/70">
-              เลือกบริการที่ชอบ จากนั้นกด{" "}
-              “ติดต่อจองคิวดูดวงผ่าน LINE” เพื่อยืนยันกับพี่หมอโดยตรง คิวจะยืนยันเมื่อ
-              พี่หมอตอบกลับเท่านั้น
-            </p>
-          </div>
-          <div className="mt-8">
-            <BookingWidget services={services} />
-          </div>
-        </div>
-      </section>
-
-      {/* Latest articles */}
+      {/* Latest articles — the features pages */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="flex items-end justify-between">
+        <div className="flex items-end justify-between border-b-2 border-ink pb-3">
           <div>
-            <h2 className="text-3xl font-bold">บทความล่าสุด</h2>
-            <p className="mt-2 text-foreground/60">
-              ความรู้และแนวทางจากพี่หมอ
-            </p>
+            <h2 className="font-display text-3xl font-bold">บทความล่าสุด</h2>
+            <p className="mt-1 text-foreground/60">ความรู้และแนวทางจากพี่หมอ</p>
           </div>
           <Link
             href="/articles"
-            className="text-sm font-medium text-violet-700"
+            className="text-sm font-bold text-newsred hover:text-violet-800"
           >
-            ดูทั้งหมด →
+            อ่านต่อ →
           </Link>
         </div>
         <div className="mt-8 grid gap-6 md:grid-cols-2">
@@ -115,12 +101,12 @@ export default async function HomePage() {
             <Link
               key={a.slug}
               href={`/articles/${a.slug}`}
-              className="rounded-2xl border border-gold/25 bg-[#121212] p-6 shadow-sm transition hover:shadow-md"
+              className="group border border-gold/25 bg-card p-6 transition hover:border-newsred"
             >
-              <p className="text-xs text-foreground/50">
+              <p className="text-xs font-semibold text-brass">
                 {formatThaiDate(a.published_at)}
               </p>
-              <h3 className="mt-2 text-lg font-bold hover:text-violet-700">
+              <h3 className="mt-2 font-display text-xl font-bold leading-snug text-ink group-hover:text-newsred">
                 {a.title}
               </h3>
               <p className="mt-2 text-sm text-foreground/60">{a.excerpt}</p>

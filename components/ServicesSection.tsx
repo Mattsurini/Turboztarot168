@@ -18,10 +18,10 @@ const ICONS: Record<string, React.ElementType> = {
 };
 
 const GRADIENTS: Record<string, string> = {
-  "qa-package": "from-[#3a2508] to-[#211405]",
-  "relationship-package": "from-[#45121c] to-[#250a10]",
-  "special-package": "from-[#2b1a4a] to-[#150a26]",
-  "calling-package": "from-[#0f3a2e] to-[#071f18]",
+  "qa-package": "from-[#3a2a12] to-[#1a1208]",
+  "relationship-package": "from-[#3a1a2a] to-[#1a0f16]",
+  "special-package": "from-[#2a1a3a] to-[#160f1f]",
+  "calling-package": "from-[#1a3a2a] to-[#0f1f16]",
 };
 
 export default function ServicesSection({

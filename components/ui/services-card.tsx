@@ -260,14 +260,14 @@ const ServiceCard = ({ service, index }: { service: Service; index: number }) =>
         <p className="text-sm text-foreground/70">{service.description}</p>
         <Link
           href={service.href}
-          className="mt-6 inline-flex items-center gap-1 rounded-full border border-white/30 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+          className="mt-6 inline-flex items-center gap-1 border border-ink px-4 py-2 text-sm font-bold text-ink transition hover:bg-ink hover:text-paper"
         >
           รายละเอียด <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
 
-      {/* Subtle overlay for better text readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent"></div>
+      {/* Hairline rule under the headline of each column */}
+      <div className="absolute inset-x-8 bottom-0 h-px bg-ink/20" />
     </motion.div>
   );
 };

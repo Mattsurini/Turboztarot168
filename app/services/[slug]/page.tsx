@@ -218,7 +218,7 @@ export default async function ServiceDetailPage({ params }: Props) {
             ))}
           </div>
         )}
-        <div className="mt-8 rounded-xl bg-violet-50 p-5 text-sm text-foreground/70">
+        <div className="mt-8 rounded-full bg-violet-50 px-6 py-4 text-sm text-black">
           💡 การเลือกบริการบนเว็บไซต์นี้เป็นเพียงการแจ้งความสนใจ
           การจองจะสำเร็จเมื่อพี่หมอยืนยันผ่าน LINE แล้วเท่านั้น
         </div>

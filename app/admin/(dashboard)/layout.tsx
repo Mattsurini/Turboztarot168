@@ -6,7 +6,6 @@ import AdminLogout from "./AdminLogout";
 const nav = [
   { href: "/admin", label: "แดชบอร์ด" },
   { href: "/admin/queue", label: "คิว" },
-  { href: "/admin/slots", label: "เปิดคิว" },
   { href: "/admin/services", label: "บริการ" },
   { href: "/admin/articles", label: "บทความ" },
   { href: "/admin/categories", label: "หมวดหมู่" },

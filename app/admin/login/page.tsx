@@ -4,9 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
 
+const ADMIN_USERNAME = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "turboz";
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@example.com";
+
 export default function AdminLogin() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,12 +18,20 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setError("");
+    if (username.trim() !== ADMIN_USERNAME) {
+      setError("ชื่อผู้ใช้ไม่ถูกต้อง");
+      setLoading(false);
+      return;
+    }
     try {
       const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({
+        email: ADMIN_EMAIL,
+        password,
+      });
       if (error) {
         setError(error.message);
         setLoading(false);
@@ -39,12 +50,12 @@ export default function AdminLogin() {
       <h1 className="text-2xl font-bold">เข้าสู่ระบบผู้ดูแล</h1>
       <form onSubmit={onSubmit} className="mt-6 space-y-4">
         <div>
-          <label className="text-sm font-medium">อีเมล</label>
+          <label className="text-sm font-medium">ชื่อผู้ใช้</label>
           <input
-            type="email"
+            type="text"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
           />
         </div>

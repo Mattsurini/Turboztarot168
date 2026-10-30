@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Noto_Serif_Thai } from "next/font/google";
+import { Inter, Noto_Serif_Thai, Cinzel } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -10,8 +10,14 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-// Cinzel has no Thai glyphs, so every gold heading silently fell back to a
-// generic serif. Use a Thai-capable serif so headings render the intended face.
+// AETHEROS display face: Cinzel for the Latin wordmark. Cinzel has no Thai
+// glyphs, so Thai headings fall back to the Thai serif in the font stack.
+const cinzel = Cinzel({
+  variable: "--font-cinzel",
+  subsets: ["latin"],
+  weight: ["700", "900"],
+});
+
 const display = Noto_Serif_Thai({
   variable: "--font-serif-thai",
   weight: ["400", "600", "700"],
@@ -40,7 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="th"
-      className={`${inter.variable} ${display.variable} h-full antialiased`}
+      className={`${inter.variable} ${cinzel.variable} ${display.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Navbar />

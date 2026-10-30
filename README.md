@@ -82,18 +82,18 @@ RLS: ทุกตาราง enable RLS; public อ่านได้เฉพ�
 | `/services`, `/services/[slug]` | บริการดูดวง |
 | `/articles`, `/articles/[slug]` | บทความ SEO + JSON-LD |
 | `/about`, `/contact`, `/privacy` | ข้อมูล |
-| `/api/availability` | API ตรวจเวลาว่าง (server-side, dynamic) |
+| `/check-booking` | ลูกค้าตรวจดูคิวของตัวเอง (ค้นจากชื่อ) |
+| `/api/booking/lookup` | API ตรวจคิว (server-side, dynamic) |
 | `/admin/*` | ผู้ดูแล (Supabase Auth + guard ฝั่ง server) |
 
 ## การทดสอบ — สถานะ
 
 การทดสอบที่ **ผ่านจริง** ในเครื่องนี้:
-- `npm run lint` ✓, `npx tsc --noEmit` ✓, `npm run build` ✓ (17 routes)
+- `npm run lint` ✓, `npx tsc --noEmit` ✓, `npm run build` ✓
 - หน้า `/`, `/services`, `/services/[slug]`, `/articles`, `/articles/[slug]`, `/about`, `/contact`, `/privacy` → 200
-- `/api/availability` เมื่อยังไม่ตั้งค่า Google → คืน `{available:false,...}` (ไม่ crash) ✓
+- `/check-booking` → 200
 - `/admin/**` เมื่อยังไม่ล็อกอิน → redirect 307 ไป `/admin/login` ✓
 - slug ที่ไม่มีอยู่ → 404 ✓
-- Unit test ตรรกะหาช่องว่าง (`computeAvailableSlots`): กันเวลาผ่านไป, กันคิวซ้อน, dedup → ผ่าน 4/4
 
 การทดสอบที่ **ต้องทำหลังตั้งค่า credential จริง** (ยังไม่ได้ทำ เพราะไม่มี key):
 - เรียก Google Calendar API จริง / ตรวจเวลาว่าง/คิวซ้อนกับปฏิทินจริง

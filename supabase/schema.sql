@@ -50,17 +50,6 @@ create table public.bookings (
   created_at timestamptz not null default now()
 );
 
--- ---------- Availability windows (public booking calendar source) ----------
--- open=true  -> "เปิดรับคิว" window (slots are carved from these)
--- open=false -> busy/not-available window (booked appointments, time off)
-create table public.availability_slots (
-  id uuid primary key default gen_random_uuid(),
-  start_at timestamptz not null,
-  end_at timestamptz not null,
-  open boolean not null default true,
-  created_at timestamptz not null default now()
-);
-
 -- ============================================================================
 -- Row Level Security
 -- Content tables: anyone may SELECT (public reading on the site).
@@ -75,14 +64,11 @@ alter table public.services  enable row level security;
 alter table public.articles  enable row level security;
 alter table public.categories enable row level security;
 alter table public.bookings  enable row level security;
-alter table public.availability_slots enable row level security;
 
 -- Public read
 create policy "public read services"  on public.services  for select using (true);
 create policy "public read articles"  on public.articles  for select using (true);
 create policy "public read categories" on public.categories for select using (true);
--- availability windows are just time ranges (no client names); public read is safe
-create policy "public read availability_slots" on public.availability_slots for select using (true);
 
 -- Admin writes (authenticated session; service role also permitted by bypass)
 create policy "admin write services"  on public.services  for all
