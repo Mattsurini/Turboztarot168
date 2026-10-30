@@ -8,9 +8,12 @@ export const SITE = {
 
 const OA_ID = process.env.NEXT_PUBLIC_LINE_OA_ID || "";
 
-/** Opens the LINE Official Account chat with a pre-filled message. */
+// lin.ee short links cannot carry a pre-filled message, so it is dropped when set
+const LINE_OA_URL = process.env.NEXT_PUBLIC_LINE_OA_URL || "";
+
+/** Opens the LINE Official Account chat (deep link, or short link when LINE_OA_URL is set). */
 export function lineOaUrl(message: string): string {
-  return `https://line.me/R/oaMessage/${OA_ID}/?${encodeURIComponent(message)}`;
+  return LINE_OA_URL || `https://line.me/R/oaMessage/${OA_ID}/?${encodeURIComponent(message)}`;
 }
 
 export function isLineConfigured(): boolean {
