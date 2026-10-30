@@ -83,7 +83,7 @@ export default function CheckBookingPage() {
                 <span className="text-xs text-foreground/60">สถานะ: {r.status}</span>
               </div>
               <p className="mt-1 text-sm text-foreground/80">
-                วันคิว:{" "}
+                วันที่ได้นัดหมายส่งตำทำนาย:{" "}
                 {r.scheduled_at
                   ? formatThaiDate(r.scheduled_at)
                   : "ยังไม่ได้นัดวัน (ติดต่อผ่าน LINE)"}
