@@ -1,0 +1,19 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "restyle",
+  "scope": "site",
+  "shape": "editorial page set (layout kept)",
+  "theme": "AETHEROS ember (kept, DESIGN.md locked)",
+  "axes": "banded ember/obsidian",
+  "hero": "centred wordmark + dateline strip + two actions (kept)",
+  "nav": "edge wordmark + bar",
+  "footer": "mast 3-col",
+  "imagery": "none added",
+  "sections": "hero, services carousel, latest articles, close",
+  "signature": "Turboz168 wordmark with gold glow (kept)",
+  "waived": [],
+  "prompt": "restyle and keep color and band guide",
+  "date": "2026-10-30"
+ }
+]

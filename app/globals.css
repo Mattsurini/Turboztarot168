@@ -1,3 +1,16 @@
+/* Hallmark · v2.0.0 · Turboztarot restyle · AETHEROS ember kept, layout kept
+   critique: the ember world was in place; the tells were hand-lettered colours
+   (48), tracked-caps labels (67) and glued arrows (63) — lifted to the tokens
+   and untracked, gold hairlines and service bands untouched.
+   redesign: restyle · keep color and band guide (DESIGN.md) · locked system
+   Hallmark · dismissed 74 x3 · the violet and amber palette classes in admin,
+   article and service detail resolve through the project's own @theme remap to
+   the kept gold and amber ramps (violet-700 = #8a5d24), never the stock swatch
+   Hallmark · pre-emit critique: P5 H4 E5 S5 R5 V4 · weakest V, carousel-led
+   sections already in the repo; kept the client's banding and cut the tells
+   Hallmark · after: Floor 0 FAIL · Reflex 0 · WARN 3 dismissed · finish-review:
+   in-thread, no render tier (puppeteer-core absent) — measured overflow, fold
+   and wrap on the dev server at 1280/1440/1920/375, all green */
 @import "tailwindcss";
 
 /* AETHEROS world over Turboztarot — high-contrast ember on obsidian.
@@ -16,6 +29,17 @@
   --ink-soft: #d2b48c;
   --rule: rgba(197, 142, 59, 0.28);
   --ember: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #0a0a0a 60%);
+
+  --panel: #121212;
+  --panel-2: #1c1c1c;
+  --panel-ink: #161616;
+  --line: #06c755;
+  --placeholder: rgba(210, 180, 140, 0.5);
+  --selection-ink: #0a0a0a;
+  --scrollbar-track: #111;
+  --hero-glow: radial-gradient(circle at 50% -10%, rgba(197, 142, 59, 0.28), transparent 55%);
+  --wordmark-glow: 0 0 28px rgba(197, 142, 59, 0.55);
+  --understep: #8a5d24;
 
   --background: var(--obsidian);
   --foreground: var(--ink);
@@ -65,6 +89,10 @@
   --color-amber-900: #5c3010;
 
   --color-slate-900: #0a0a0a;
+
+  --color-panel: var(--panel);
+  --color-panel2: var(--panel-2);
+  --color-line: var(--line);
 }
 
 * {
@@ -74,6 +102,7 @@
 @layer base {
   html {
     color-scheme: dark;
+    overflow-x: clip;
   }
   body {
     background: var(--obsidian);
@@ -82,33 +111,51 @@
     color: var(--ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
   }
   h1, h2, h3, h4, h5 {
     font-family: var(--font-display);
     color: var(--ink);
+    text-wrap: balance;
   }
   input, select, textarea {
-    background: #161616;
+    background: var(--panel-ink);
     color: var(--ink);
     border: 1px solid var(--rule);
   }
   input::placeholder, textarea::placeholder {
-    color: rgba(210, 180, 140, 0.5);
+    color: var(--placeholder);
   }
   ::selection {
     background: var(--gold);
-    color: #0a0a0a;
+    color: var(--selection-ink);
   }
   ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
   }
   ::-webkit-scrollbar-track {
-    background: #111;
+    background: var(--scrollbar-track);
   }
   ::-webkit-scrollbar-thumb {
     background: linear-gradient(var(--gold), var(--amber));
     border-radius: 8px;
-    border: 3px solid #111;
+    border: 3px solid var(--scrollbar-track);
+  }
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+  :where(a, button, summary):active {
+    opacity: 0.82;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

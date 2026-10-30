@@ -41,7 +41,7 @@ export default function BookingWidget({ services }: { services: Service[] }) {
             onChange={(e) => setServiceId(e.target.value)}
             className="mt-2 w-full border border-ink/40 bg-card px-3 py-2 text-sm focus:border-newsred focus:outline-none"
           >
-            <option value="">— เลือกบริการ —</option>
+            <option value="">เลือกบริการ</option>
             {services.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name} ({s.price})
@@ -64,8 +64,8 @@ export default function BookingWidget({ services }: { services: Service[] }) {
         <div className="border border-ink/30 bg-card p-4 text-sm">
           <p className="font-display font-bold text-newsred">สรุปการจองของคุณ</p>
           <ul className="mt-2 space-y-1 text-foreground/80">
-            <li>บริการ: {selectedService?.name || "—"}</li>
-            <li>ชื่อ: {name || "—"}</li>
+            <li>บริการ: {selectedService?.name || "ยังไม่ได้เลือก"}</li>
+            <li>ชื่อ: {name || "ยังไม่ได้กรอก"}</li>
             <li>วัน/เวลา: นัดผ่าน LINE กับพี่หมอโดยตรง</li>
           </ul>
         </div>
@@ -75,7 +75,7 @@ export default function BookingWidget({ services }: { services: Service[] }) {
         <button
             type="submit"
             disabled={checking}
-            className="w-full bg-[#06c755] px-6 py-3 font-bold text-white transition hover:brightness-95 disabled:opacity-60"
+            className="w-full bg-line px-6 py-3 font-bold text-white transition-[filter] hover:brightness-95 disabled:opacity-60"
           >
             จองคิวดูดวงผ่าน LINE
           </button>

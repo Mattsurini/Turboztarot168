@@ -29,7 +29,7 @@ export default async function AdminDashboardPage() {
           <Link
             key={c.href}
             href={c.href}
-            className="rounded-2xl border border-gold/25 bg-[#121212] p-6 shadow-sm"
+            className="rounded-2xl border border-gold/25 bg-panel p-6 shadow-sm"
           >
             <p className="text-3xl font-bold">{c.value}</p>
             <p className="mt-1 text-foreground/60">{c.label}</p>

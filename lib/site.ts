@@ -2,7 +2,7 @@ export const SITE = {
   name: "Turboztarot",
   title: "Turboztarot | ดูดวงโดยพี่หมอ",
   description:
-    "บริการดูดวงรายบุคคลโดยพี่หมอ Turboztarot — ไพ่ยิปซี ดวงความรัก การงาน การเงิน บทความทำนาย และการเปิดรับคิวผ่าน LINE",
+    "บริการดูดวงรายบุคคลโดยพี่หมอ Turboztarot: ไพ่ยิปซี ดวงความรัก การงาน การเงิน บทความทำนาย และการเปิดรับคิวผ่าน LINE",
   url: (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, ""),
 };
 

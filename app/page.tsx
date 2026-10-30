@@ -23,14 +23,14 @@ export default async function HomePage() {
 
       {/* Hero — AetherOS ember front page */}
       <section className="relative overflow-hidden border-b-2 border-gold/30 bg-paper">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_-10%,rgba(197,142,59,0.28),transparent_55%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[var(--hero-glow)]" />
         <div className="flex flex-col items-center justify-center text-center">
           <div className="relative mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 sm:py-20">
-            <h1 className="font-display text-5xl font-black tracking-[0.08em] text-ink sm:text-7xl [text-shadow:0_0_28px_rgba(197,142,59,0.55)]">
+            <h1 className="font-display text-5xl font-black text-ink sm:text-7xl [text-shadow:var(--wordmark-glow)]">
               Turboz<span className="text-newsred">tarot</span>168
             </h1>
-            <div className="mx-auto mt-5 max-w-xl border-y border-gold/25 py-2 text-xs tracking-[0.3em] text-inksoft">
-              ฉบับดูดวงออนไลน์ · โดย พี่หมอเทอร์โบ
+            <div className="mx-auto mt-5 max-w-xl border-y border-gold/25 py-2 text-xs text-inksoft">
+              ฉบับดูดวงออนไลน์ โดย พี่หมอเทอร์โบ
             </div>
             <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-ink/85">
               การเล่าเรื่องของคุณมีผลต่อคำทำนายของเทอร์โบ
@@ -40,13 +40,13 @@ export default async function HomePage() {
             <div className="mt-9 flex flex-wrap justify-center gap-3">
               <Link
                 href="/services"
-                className="bg-newsred px-7 py-3 font-bold text-[#0a0a0a] shadow-[0_3px_0_#8a5d24] transition hover:brightness-110"
+                className="bg-newsred px-7 py-3 font-bold text-paper shadow-[0_3px_0_var(--understep)] transition-[filter,transform] hover:brightness-110"
               >
                 เลือกบริการดูดวง
               </Link>
               <a
                 href={lineOaUrl("สวัสดีครับ/ค่ะ ขอจองคิวดูดวงค่ะ")}
-                className="border border-gold/50 bg-paper px-7 py-3 font-bold text-gold transition hover:bg-gold hover:text-[#0a0a0a]"
+                className="border border-gold/50 bg-paper px-7 py-3 font-bold text-gold transition-[background-color,color] hover:bg-gold hover:text-paper"
               >
                 สอบถามผ่าน LINE
               </a>
@@ -68,7 +68,7 @@ export default async function HomePage() {
             href="/services"
             className="text-sm font-bold text-newsred hover:text-violet-800"
           >
-            อ่านต่อ →
+            อ่านต่อ
           </Link>
         </div>
         <div className="mt-8">
@@ -93,7 +93,7 @@ export default async function HomePage() {
             href="/articles"
             className="text-sm font-bold text-newsred hover:text-violet-800"
           >
-            อ่านต่อ →
+            อ่านต่อ
           </Link>
         </div>
         <div className="mt-8 grid gap-6 md:grid-cols-2">

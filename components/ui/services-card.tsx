@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, MotionConfig } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -254,15 +254,13 @@ const ServiceCard = ({ service, index }: { service: Service; index: number }) =>
         <service.icon className="mb-auto h-12 w-12 text-foreground" />
       </div>
       <div className="z-10">
-        <h3 className="mb-2 text-lg font-semibold uppercase tracking-wider">
-          {service.title}
-        </h3>
+        <h3 className="mb-2 text-lg font-semibold">{service.title}</h3>
         <p className="text-sm text-foreground/70">{service.description}</p>
         <Link
           href={service.href}
-          className="mt-6 inline-flex items-center gap-1 border border-ink px-4 py-2 text-sm font-bold text-ink transition hover:bg-ink hover:text-paper"
+          className="mt-6 inline-flex items-center border border-ink px-4 py-2 text-sm font-bold text-ink transition-[background-color,color] hover:bg-ink hover:text-paper"
         >
-          รายละเอียด <ArrowRight className="h-4 w-4" />
+          รายละเอียด
         </Link>
       </div>
 
@@ -279,7 +277,8 @@ export const ServiceCarousel = ({ services }: { services: Service[] }) => {
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
-      <Carousel
+      <MotionConfig reducedMotion="user">
+        <Carousel
         ref={ref}
         opts={{
           align: "start",
@@ -304,6 +303,7 @@ export const ServiceCarousel = ({ services }: { services: Service[] }) => {
         </motion.div>
         <CarouselNext className="bg-foreground/10 border-0 hover:bg-foreground/20 text-foreground" />
       </Carousel>
+      </MotionConfig>
     </div>
   );
 };

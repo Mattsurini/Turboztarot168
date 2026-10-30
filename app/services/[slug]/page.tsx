@@ -163,9 +163,9 @@ export default async function ServiceDetailPage({ params }: Props) {
   return (
     <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
       <Link href="/services" className="text-sm text-violet-700">
-        ← กลับไปบริการทั้งหมด
+        กลับไปบริการทั้งหมด
       </Link>
-      <div className="mt-6 rounded-2xl border border-gold/25 bg-[#121212] p-8 shadow-sm">
+      <div className="mt-6 rounded-2xl border border-gold/25 bg-panel p-8 shadow-sm">
         <JsonLd
           data={{
             "@context": "https://schema.org",
@@ -197,7 +197,7 @@ export default async function ServiceDetailPage({ params }: Props) {
             {SLUG_PACKAGES[slug].map((p) => (
               <div
                 key={p.name}
-                className="flex flex-col rounded-2xl border border-white/10 bg-[#1c1c1c] p-5"
+                className="flex flex-col rounded-2xl border border-white/10 bg-panel2 p-5"
               >
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-500/15 text-violet-300">
                   <p.icon className="h-4 w-4" />
@@ -219,12 +219,12 @@ export default async function ServiceDetailPage({ params }: Props) {
           </div>
         )}
         <div className="mt-8 rounded-full bg-violet-50 px-6 py-4 text-sm text-black">
-          💡 การเลือกบริการบนเว็บไซต์นี้เป็นเพียงการแจ้งความสนใจ
+          การเลือกบริการบนเว็บไซต์นี้เป็นเพียงการแจ้งความสนใจ
           การจองจะสำเร็จเมื่อพี่หมอยืนยันผ่าน LINE แล้วเท่านั้น
         </div>
         <a
           href={lineOaUrl(lineMsg)}
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#06c755] px-6 py-3 font-semibold text-white transition hover:brightness-95"
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-line px-6 py-3 font-semibold text-white transition-[filter] hover:brightness-95"
         >
           จองคิวดูดวงผ่าน LINE
         </a>

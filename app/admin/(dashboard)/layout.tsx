@@ -25,7 +25,7 @@ export default async function AdminDashboardLayout({
         <h1 className="text-xl font-bold">ผู้ดูแล Turboztarot</h1>
         <div className="flex items-center gap-3">
           <Link href="/" className="text-sm text-violet-700">
-            ดูเว็บไซต์ →
+            ดูเว็บไซต์
           </Link>
           <AdminLogout />
         </div>

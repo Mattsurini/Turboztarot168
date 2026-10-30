@@ -56,7 +56,7 @@ export default function QueueManager({ bookings }: { bookings: BookingRow[] }) {
       </p>
       {message && <p className="mt-2 text-sm text-foreground/70">{message}</p>}
 
-      <form onSubmit={submit} className="mt-6 grid gap-3 rounded-2xl border border-gold/25 bg-[#121212] p-6 sm:grid-cols-4">
+      <form onSubmit={submit} className="mt-6 grid gap-3 rounded-2xl border border-gold/25 bg-panel p-6 sm:grid-cols-4">
         <input name="name" required placeholder="ชื่อลูกค้า" className="rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
         <input name="service_name" placeholder="บริการ" className="rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
         <input name="scheduled_at" type="datetime-local" className="rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
@@ -71,9 +71,9 @@ export default function QueueManager({ bookings }: { bookings: BookingRow[] }) {
       <div className="mt-6 space-y-3">
         {bookings.length === 0 && <p className="text-foreground/50">ยังไม่มีคิว</p>}
         {bookings.map((b) => (
-          <div key={b.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gold/25 bg-[#121212] px-4 py-3">
+          <div key={b.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gold/25 bg-panel px-4 py-3">
             <div>
-              <p className="font-semibold">{b.name} {b.service_name && <span className="text-violet-700">· {b.service_name}</span>}</p>
+              <p className="font-semibold">{b.name}{b.service_name ? <span className="text-violet-700">: {b.service_name}</span> : null}</p>
               <p className="text-sm text-foreground/50">
                 {b.scheduled_at ? `${formatDate(b.scheduled_at)} ${formatTime(b.scheduled_at)}` : "ยังไม่ระบุเวลา"}
               </p>

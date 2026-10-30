@@ -27,14 +27,14 @@ export default function Footer() {
           <h4 className="font-display text-sm font-bold text-newsred">จองคิวดูดวงผ่าน LINE</h4>
           <a
             href={lineOaUrl("สวัสดีครับ/ค่ะ ขอจองคิวดูดวงค่ะ")}
-            className="mt-2 inline-block rounded-sm bg-[#06c755] px-4 py-2 text-sm font-medium text-white transition hover:brightness-95"
+            className="mt-2 inline-block rounded-sm bg-line px-4 py-2 text-sm font-medium text-white transition-[filter] hover:brightness-95"
           >
             LINE Official Account
           </a>
         </div>
       </div>
       <div className="border-t border-ink/20 py-4 text-center text-xs text-foreground/50">
-        © {new Date().getFullYear()} {SITE.name} — ดูดวงเพื่อความบันเทิงและแนวทาง
+        © {new Date().getFullYear()} {SITE.name}: ดูดวงเพื่อความบันเทิงและแนวทาง
       </div>
     </footer>
   );

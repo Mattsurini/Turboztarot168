@@ -33,7 +33,7 @@ export default async function ArticlesPage() {
           <Link
             key={a.id}
             href={`/articles/${a.slug}`}
-            className="flex flex-col rounded-2xl border border-gold/25 bg-[#121212] p-6 shadow-sm transition hover:shadow-md"
+            className="flex flex-col rounded-2xl border border-gold/25 bg-panel p-6 shadow-sm transition-[box-shadow] hover:shadow-md"
           >
             <div className="flex items-center justify-between text-xs text-foreground/50">
               <span>{formatThaiDate(a.published_at)}</span>
@@ -46,7 +46,7 @@ export default async function ArticlesPage() {
             <h2 className="mt-3 text-lg font-bold hover:text-violet-700">{a.title}</h2>
             <p className="mt-2 flex-1 text-sm text-foreground/60">{a.excerpt}</p>
             <span className="mt-4 text-sm font-medium text-violet-700">
-              อ่านต่อ →
+              อ่านต่อ
             </span>
           </Link>
         ))}

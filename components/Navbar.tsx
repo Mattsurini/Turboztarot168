@@ -45,7 +45,7 @@ export default function Navbar() {
         {/* Mobile */}
         <details className="group md:hidden">
           <summary className="list-none cursor-pointer p-2 text-foreground/80">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
             </svg>
           </summary>

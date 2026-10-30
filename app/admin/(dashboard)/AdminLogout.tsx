@@ -17,7 +17,7 @@ export default function AdminLogout() {
   return (
     <button
       onClick={logout}
-      className="rounded-full border border-gold/30 px-4 py-1.5 text-sm text-foreground/70 hover:bg-[#1f1f1f]"
+      className="rounded-full border border-gold/30 px-4 py-1.5 text-sm text-foreground/70 hover:bg-panel2"
     >
       ออกจากระบบ
     </button>

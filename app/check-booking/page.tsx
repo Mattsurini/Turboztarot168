@@ -76,7 +76,7 @@ export default function CheckBookingPage() {
           {rows.map((r, i) => (
             <li
               key={i}
-              className="rounded-2xl border border-gold/25 bg-[#121212] p-4"
+              className="rounded-2xl border border-gold/25 bg-panel p-4"
             >
               <div className="flex items-center justify-between">
                 <p className="font-bold">{r.service_name || "บริการ"}</p>

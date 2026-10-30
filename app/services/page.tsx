@@ -4,7 +4,7 @@ import { getServices } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "บริการดูดวง",
-  description: "บริการดูดวงรายบุคคลโดยพี่หมอ Turboztarot — ไพ่ยิปซี ดวงความรัก การงาน การเงิน",
+  description: "บริการดูดวงรายบุคคลโดยพี่หมอ Turboztarot: ไพ่ยิปซี ดวงความรัก การงาน การเงิน",
 };
 
 export default async function ServicesPage() {
@@ -20,14 +20,14 @@ export default async function ServicesPage() {
           <Link
             key={s.id}
             href={`/services/${s.slug}`}
-            className="group flex flex-col rounded-2xl border border-gold/25 bg-[#121212] p-6 shadow-sm transition hover:shadow-md"
+            className="group flex flex-col rounded-2xl border border-gold/25 bg-panel p-6 shadow-sm transition-[box-shadow] hover:shadow-md"
           >
             <h2 className="mt-4 text-xl font-bold group-hover:text-violet-700">
               {s.name}
             </h2>
             <p className="mt-2 flex-1 text-sm text-foreground/60">{s.short_desc}</p>
             <span className="mt-4 text-sm font-medium text-violet-700">
-              ดูรายละเอียด →
+              ดูรายละเอียด
             </span>
           </Link>
         ))}

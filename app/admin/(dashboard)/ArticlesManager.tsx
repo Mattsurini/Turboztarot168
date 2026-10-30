@@ -63,7 +63,7 @@ export default function ArticlesManager({
       {message && <p className="mt-2 text-sm text-foreground/70">{message}</p>}
 
       {open && (
-        <form onSubmit={submit} className="mt-6 space-y-3 rounded-2xl border border-gold/25 bg-[#121212] p-6">
+        <form onSubmit={submit} className="mt-6 space-y-3 rounded-2xl border border-gold/25 bg-panel p-6">
           <input type="hidden" name="id" value={editing.id} />
           <div className="grid gap-3 sm:grid-cols-3">
             <label className="block text-sm">
@@ -80,7 +80,7 @@ export default function ArticlesManager({
               <span className="font-medium">หมวดหมู่</span>
               <select name="category_id" value={editing.category_id ?? ""} onChange={(e) => setEditing({ ...editing, category_id: e.target.value || null })}
                 className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
-                <option value="">— ไม่มี —</option>
+                <option value="">ไม่มีหมวดหมู่</option>
                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </label>
@@ -111,7 +111,7 @@ export default function ArticlesManager({
 
       <div className="mt-6 space-y-3">
         {articles.map((a) => (
-          <div key={a.id} className="flex items-center justify-between rounded-xl border border-gold/25 bg-[#121212] px-4 py-3">
+          <div key={a.id} className="flex items-center justify-between rounded-xl border border-gold/25 bg-panel px-4 py-3">
             <div>
               <p className="font-semibold">{a.title}</p>
               <p className="text-sm text-foreground/50">/{a.slug}</p>

@@ -18,14 +18,14 @@ export default function AboutPage() {
         เราให้บริการผ่านไพ่ยิปซีแบบตัวต่อตัว ดูแลทุกคำถามด้วยความจริงใจและเป็นกันเอง
         พร้อมคำแนะนำที่นำไปใช้ได้จริงในชีวิตประจำวัน
       </p>
-      <div className="mt-8 rounded-2xl border border-gold/25 bg-[#121212] p-6">
+      <div className="mt-8 rounded-2xl border border-gold/25 bg-panel p-6">
         <h2 className="text-xl font-bold">ติดต่อพี่หมอ</h2>
         <p className="mt-2 text-sm text-foreground/70">
-          สะดวกที่สุดผ่าน LINE Official Account — พี่หมอจะตอบกลับโดยตรง
+          สะดวกที่สุดผ่าน LINE Official Account พี่หมอจะตอบกลับโดยตรง
         </p>
         <a
           href={lineOaUrl("สวัสดีครับ/ค่ะ พี่หมอคะ อยากสอบถามเรื่องดูดวงค่ะ")}
-          className="mt-4 inline-block rounded-full bg-[#06c755] px-5 py-2.5 font-semibold text-white"
+          className="mt-4 inline-block rounded-full bg-line px-5 py-2.5 font-semibold text-white"
         >
           เพิ่มเพื่อนและทัก LINE
         </a>

@@ -74,7 +74,7 @@ export default function ServicesManager({ services }: { services: ServiceRow[] }
       {message && <p className="mt-2 text-sm text-foreground/70">{message}</p>}
 
       {open && (
-        <form ref={formRef} onSubmit={submit} className="mt-6 space-y-3 rounded-2xl border border-gold/25 bg-[#121212] p-6">
+        <form ref={formRef} onSubmit={submit} className="mt-6 space-y-3 rounded-2xl border border-gold/25 bg-panel p-6">
           <input type="hidden" name="id" value={editing.id} />
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="ชื่อบริการ" name="name" value={editing.name} onChange={(v) => setEditing({ ...editing, name: v })} required />
@@ -123,11 +123,11 @@ export default function ServicesManager({ services }: { services: ServiceRow[] }
 
       <div className="mt-6 space-y-3">
         {services.map((s) => (
-          <div key={s.id} className="flex items-center justify-between rounded-xl border border-gold/25 bg-[#121212] px-4 py-3">
+          <div key={s.id} className="flex items-center justify-between rounded-xl border border-gold/25 bg-panel px-4 py-3">
             <div>
               <p className="font-semibold">{s.name}</p>
               <p className="text-sm text-foreground/50">
-                /{s.slug} · {s.price || "—"} · {s.active ? "ใช้งาน" : "ปิด"}
+                /{s.slug} · {s.price || "ยังไม่ตั้งราคา"} · {s.active ? "ใช้งาน" : "ปิด"}
               </p>
             </div>
             <div className="flex gap-2">

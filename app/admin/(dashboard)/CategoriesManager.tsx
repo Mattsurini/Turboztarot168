@@ -57,7 +57,7 @@ export default function CategoriesManager({ categories }: { categories: Category
 
       <div className="mt-6 space-y-3">
         {categories.map((c) => (
-          <div key={c.id} className="flex items-center justify-between rounded-xl border border-gold/25 bg-[#121212] px-4 py-3">
+          <div key={c.id} className="flex items-center justify-between rounded-xl border border-gold/25 bg-panel px-4 py-3">
             <p className="font-semibold">{c.name} <span className="text-sm font-normal text-foreground/50">/{c.slug}</span></p>
             <button onClick={() => remove(c)} className="rounded-full border border-red-200 px-3 py-1 text-sm text-red-600">ลบ</button>
           </div>

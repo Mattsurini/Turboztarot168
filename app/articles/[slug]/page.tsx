@@ -48,7 +48,7 @@ export default async function ArticleDetailPage({ params }: Props) {
         }}
       />
       <Link href="/articles" className="text-sm text-violet-700">
-        ← กลับไปบทความทั้งหมด
+        กลับไปบทความทั้งหมด
       </Link>
       <div className="mt-6">
         <div className="flex items-center gap-3 text-sm text-foreground/50">
@@ -75,7 +75,7 @@ export default async function ArticleDetailPage({ params }: Props) {
             href="/services"
             className="mt-4 inline-block rounded-full bg-violet-700 px-5 py-2 text-sm font-semibold text-black"
           >
-            ดูบริการดูดวง →
+            ดูบริการดูดวง
           </Link>
         </div>
       </div>

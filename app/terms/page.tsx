@@ -8,8 +8,7 @@ export default function TermsPage() {
   return (
     <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
       <h1 className="text-4xl font-bold">
-        <span className="text-amber-400">⭐</span> ข้อตกลงในการอ่านไพ่{" "}
-        <span className="text-amber-400">⭐</span>
+        ข้อตกลงในการอ่านไพ่
       </h1>
       <ol className="mt-6 list-decimal space-y-4 pl-5 leading-relaxed text-foreground/80">
         <li>
