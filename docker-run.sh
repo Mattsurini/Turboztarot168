@@ -17,6 +17,7 @@ docker build \
   --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="$NEXT_PUBLIC_SUPABASE_ANON_KEY" \
   --build-arg NEXT_PUBLIC_ADMIN_USERNAME="${NEXT_PUBLIC_ADMIN_USERNAME:-turboz}" \
   --build-arg NEXT_PUBLIC_ADMIN_EMAIL="${NEXT_PUBLIC_ADMIN_EMAIL:-admin@example.com}" \
+  --build-arg NEXT_PUBLIC_LINE_OA_ID="${NEXT_PUBLIC_LINE_OA_ID:-}" \
   -t "$IMG" .
 
 echo "==> Stopping old container (if any)"
