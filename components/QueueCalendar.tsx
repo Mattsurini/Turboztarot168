@@ -12,7 +12,6 @@ import { toDateKey } from "@/lib/format";
 const STATUS_BARS: Record<string, string> = {
   "รับคิวแล้ว": "border-l-red-500",
   "กำลังทำนาย": "border-l-blue-500",
-  "ส่งคำทำนายแล้ว": "border-l-green-500",
 };
 
 /** Build the 6-row month calendar grid (weeks start Sunday) for a given month. */
@@ -28,13 +27,16 @@ function monthCells(year: number, month: number): Date[] {
   return cells;
 }
 
+/** shortcut: Thailand has no DST; a +7h shift on the instant gives the Bangkok wall clock. */
+const bkk = (d: Date) => new Date(d.getTime() + 7 * 60 * 60 * 1000);
+
 export default async function QueueCalendar() {
   const bookings = await getBookingsForCalendar();
 
   // current month (Bangkok) → build grid
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1; // 1-based
+  const bkkNow = bkk(new Date());
+  const year = bkkNow.getFullYear();
+  const month = bkkNow.getMonth() + 1; // 1-based
   const cells = monthCells(year, month);
 
   const byDay = new Map<string, typeof bookings>();
@@ -76,7 +78,7 @@ export default async function QueueCalendar() {
           {cells.map((date) => {
             const key = toDateKey(date.toISOString());
             const dayBookings = byDay.get(key);
-            const inMonth = date.getMonth() + 1 === month;
+            const inMonth = bkk(date).getMonth() + 1 === month;
             return (
               <div
                 key={key}
@@ -85,7 +87,7 @@ export default async function QueueCalendar() {
                 }`}
               >
                 <p className="text-xs font-semibold text-foreground/70">
-                  {date.getDate()}
+                  {bkk(date).getDate()}
                 </p>
                 <div className="mt-1 space-y-1">
                   {dayBookings?.slice(0, 3).map((b) => (

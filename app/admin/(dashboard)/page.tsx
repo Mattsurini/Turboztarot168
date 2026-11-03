@@ -18,7 +18,9 @@ export default async function AdminDashboardPage() {
     getArticlesAll(),
     getBookingsAll(),
   ]);
-  const pending = (bks as BookingRow[]).filter((b) => b.status === "รับคิวแล้ว").length;
+  const pending = (bks as BookingRow[]).filter(
+    (b) => b.status !== "ส่งคำทำนายแล้ว" && b.status !== "ยกเลิก"
+  ).length;
 
   const cards = [
     { href: "/admin/queue", label: "คิวรอ", value: pending },

@@ -51,9 +51,7 @@ const BK = {
   status: "status",
 } as const;
 
-/** Values written to the bookings DB now. Legacy rows (รอ/ยืนยันแล้ว/เสร็จสิ้น) are mapped on read. */
-export const BOOKING_STATUSES = ["รับคิวแล้ว", "กำลังทำนาย", "ส่งคำทำนายแล้ว"] as const;
-
+/** Legacy values (รอ/ยืนยันแล้ว/เสร็จสิ้น) are mapped on read in getBookingsAll. */
 const LEGACY_STATUS: Record<string, string> = {
   รอ: "รับคิวแล้ว",
   "ยืนยันแล้ว": "รับคิวแล้ว",
