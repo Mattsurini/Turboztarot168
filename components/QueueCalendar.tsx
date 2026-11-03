@@ -9,9 +9,11 @@ import { toDateKey } from "@/lib/format";
  * Notion via lib/data.ts.
  */
 
-const STATUS_BARS: Record<string, string> = {
-  "รับคิวแล้ว": "border-l-red-500",
-  "กำลังทำนาย": "border-l-blue-500",
+// Inline hex: the dark "ember" theme remaps Tailwind red-500/blue-500 to the
+// same dark amber, so status bars must not rely on theme color tokens.
+const STATUS_COLORS: Record<string, string> = {
+  "รับคิวแล้ว": "#ef4444",
+  "กำลังทำนาย": "#3b82f6",
 };
 
 /** Build the 6-row month calendar grid (weeks start Sunday) for a given month. */
@@ -93,9 +95,10 @@ export default async function QueueCalendar() {
                   {dayBookings?.slice(0, 3).map((b) => (
                     <div
                       key={b.id}
-                      className={`border-l-4 bg-card px-1.5 py-0.5 text-[11px] font-bold text-white ${
-                        STATUS_BARS[b.status] ?? "border-l-gray-400"
-                      }`}
+                      style={{
+                        borderLeft: `4px solid ${STATUS_COLORS[b.status] ?? "#9ca3af"}`,
+                      }}
+                      className="bg-card px-1.5 py-0.5 text-[11px] font-bold text-white"
                     >
                       <span className="truncate">{b.name}</span>
                     </div>
