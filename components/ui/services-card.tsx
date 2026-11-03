@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { motion, useInView, MotionConfig } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -225,22 +224,9 @@ export interface Service {
 }
 
 // Sub-component for individual cards
-const ServiceCard = ({ service, index }: { service: Service; index: number }) => {
-  const cardVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        delay: index * 0.1,
-      },
-    },
-  };
-
+const ServiceCard = ({ service }: { service: Service }) => {
   return (
-    <motion.div
-      variants={cardVariants}
+    <div
       className={cn(
         "relative flex h-[450px] w-full flex-col justify-between overflow-hidden rounded-3xl p-8 bg-gradient-to-r",
         service.gradient
@@ -266,44 +252,32 @@ const ServiceCard = ({ service, index }: { service: Service; index: number }) =>
 
       {/* Hairline rule under the headline of each column */}
       <div className="absolute inset-x-8 bottom-0 h-px bg-ink/20" />
-    </motion.div>
+    </div>
   );
 };
 
 // Main exportable component
 export const ServiceCarousel = ({ services }: { services: Service[] }) => {
-  const ref = React.useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
-
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
-      <MotionConfig reducedMotion="user">
-        <Carousel
-        ref={ref}
+      <Carousel
         opts={{
           align: "start",
           loop: true,
         }}
         className="relative"
       >
-        <motion.div
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          transition={{ staggerChildren: 0.1 }}
-        >
-          <CarouselContent>
-            {services.map((service, index) => (
-              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                <div className="p-1">
-                  <ServiceCard service={service} index={index} />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </motion.div>
+        <CarouselContent>
+          {services.map((service) => (
+            <CarouselItem key={service.href} className="md:basis-1/2 lg:basis-1/3">
+              <div className="p-1">
+                <ServiceCard service={service} />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
         <CarouselNext className="bg-foreground/10 border-0 hover:bg-foreground/20 text-foreground" />
       </Carousel>
-      </MotionConfig>
     </div>
   );
 };

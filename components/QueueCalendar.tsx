@@ -62,9 +62,9 @@ export default async function QueueCalendar() {
     <section className="mx-auto w-full max-w-5xl px-4 py-12 sm:px-6">
       <div className="flex items-end justify-between border-b-2 border-ink pb-3">
         <div>
-          <h2 className="font-display text-3xl font-bold">คิวดูดวง</h2>
+          <h1 className="font-display text-3xl font-bold">คิวดูดวง</h1>
           <p className="mt-1 text-foreground/60">
-            แดง = รับคิวแล้ว ยังไม่ได้ทำนาย · ฟ้า = กำลังทำนาย
+            แถบสีแดง: รอคำทำนาย · แถบสีน้ำเงิน: กำลังทำนาย
           </p>
         </div>
       </div>
@@ -84,7 +84,7 @@ export default async function QueueCalendar() {
             return (
               <div
                 key={key}
-                className={`min-h-20 bg-paper p-1.5 text-left align-top ${
+                className={`relative min-h-[108px] bg-paper p-1.5 text-left align-top ${
                   inMonth ? "" : "opacity-40"
                 }`}
               >
@@ -92,21 +92,44 @@ export default async function QueueCalendar() {
                   {bkk(date).getDate()}
                 </p>
                 <div className="mt-1 space-y-1">
-                  {dayBookings?.slice(0, 3).map((b) => (
+                  {dayBookings?.slice(0, 2).map((b) => (
                     <div
                       key={b.id}
+                      title={b.name || "ไม่ระบุชื่อ"}
                       style={{
                         borderLeft: `4px solid ${STATUS_COLORS[b.status] ?? "#9ca3af"}`,
                       }}
-                      className="bg-card px-1.5 py-0.5 text-[11px] font-bold text-white"
+                      className="bg-card px-1.5 py-1 text-xs font-bold leading-tight text-white"
                     >
-                      <span className="truncate">{b.name}</span>
+                      <span className="block truncate">{b.name || "ไม่ระบุชื่อ"}</span>
                     </div>
                   ))}
-                  {dayBookings && dayBookings.length > 3 && (
-                    <p className="text-[11px] font-semibold text-foreground/60">
-                      +{dayBookings.length - 3} คน
-                    </p>
+                  {dayBookings && dayBookings.length > 2 && (
+                    // Ties the row height to the 2 visible chips; the rest open
+                    // as an absolute popover so a busy day never stretches the row.
+                    <details className="group relative">
+                      <summary className="list-none cursor-pointer text-[11px] font-semibold text-foreground/60 hover:text-foreground">
+                        +{dayBookings.length - 2} คน
+                      </summary>
+                      <div
+                        className={`absolute top-full z-10 mt-1 max-h-48 w-44 space-y-1 overflow-y-auto rounded-sm border border-rule bg-panel/95 p-1.5 shadow-lg ${
+                          bkk(date).getDay() >= 4 ? "right-0" : "left-0"
+                        }`}
+                      >
+                        {dayBookings.slice(2).map((b) => (
+                          <div
+                            key={b.id}
+                            title={b.name || "ไม่ระบุชื่อ"}
+                            style={{
+                              borderLeft: `4px solid ${STATUS_COLORS[b.status] ?? "#9ca3af"}`,
+                            }}
+                            className="bg-card px-1.5 py-1 text-xs font-bold leading-tight text-white"
+                          >
+                            <span className="block truncate">{b.name || "ไม่ระบุชื่อ"}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
                   )}
                 </div>
               </div>
