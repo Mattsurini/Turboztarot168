@@ -256,8 +256,10 @@ export async function createRow(
   table: "services" | "categories" | "articles" | "bookings",
   row: Row
 ): Promise<void> {
+  // env values are data-source ids (read path uses dataSources.query too);
+  // pages must be created under the data source, not a database.
   await requireNotion().pages.create({
-    parent: { database_id: DB[table] },
+    parent: { data_source_id: DB[table] },
     properties: propsFor(table, row) as NonNullable<
       CreatePageParameters["properties"]
     >,
