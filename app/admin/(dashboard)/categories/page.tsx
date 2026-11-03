@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
-import { adminDb } from "@/lib/admin";
+import { getAdminUser } from "@/lib/admin";
+import { getCategoriesAll } from "@/lib/notion-data";
 import CategoriesManager, { type CategoryRow } from "../CategoriesManager";
 
 export default async function AdminCategoriesPage() {
-  const db = await adminDb();
-  if (!db) redirect("/admin/login");
-  const { data } = await db.from("categories").select("*").order("name");
-  return <CategoriesManager categories={(data as CategoryRow[]) || []} />;
+  if (!(await getAdminUser())) redirect("/admin/login");
+  const categories = (await getCategoriesAll()) as CategoryRow[];
+  return <CategoriesManager categories={categories} />;
 }

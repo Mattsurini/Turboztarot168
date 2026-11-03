@@ -1,48 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { createBrowserClient } from "@supabase/ssr";
-
-const ADMIN_USERNAME = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "turboz";
-const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@example.com";
+import { loginAction } from "../actions";
 
 export default function AdminLogin() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [pending, startTransition] = useTransition();
 
-  async function onSubmit(e: React.FormEvent) {
+  function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
+    const fd = new FormData(e.currentTarget as HTMLFormElement);
     setError("");
-    if (username.trim() !== ADMIN_USERNAME) {
-      setError("ชื่อผู้ใช้ไม่ถูกต้อง");
-      setLoading(false);
-      return;
-    }
-    try {
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      );
-      const { error } = await supabase.auth.signInWithPassword({
-        email: ADMIN_EMAIL,
-        password,
-      });
-      if (error) {
-        setError(error.message);
-        setLoading(false);
-        return;
-      }
-      router.push("/admin");
-      router.refresh();
-    } catch {
-      setError("ไม่สามารถเข้าสู่ระบบได้ในขณะนี้");
-      setLoading(false);
-    }
+    startTransition(async () => {
+      const r = await loginAction(fd);
+      if (!r.ok) setError(r.error ?? "");
+      else router.push("/admin");
+    });
   }
 
   return (
@@ -53,9 +28,8 @@ export default function AdminLogin() {
           <label className="text-sm font-medium">ชื่อผู้ใช้</label>
           <input
             type="text"
+            name="username"
             required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
             className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
           />
         </div>
@@ -63,19 +37,18 @@ export default function AdminLogin() {
           <label className="text-sm font-medium">รหัสผ่าน</label>
           <input
             type="password"
+            name="password"
             required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
           />
         </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
         <button
           type="submit"
-          disabled={loading}
+          disabled={pending}
           className="w-full rounded-full bg-violet-700 px-6 py-3 font-semibold text-black hover:bg-violet-800 disabled:opacity-60"
         >
-          {loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
+          {pending ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
         </button>
       </form>
     </div>

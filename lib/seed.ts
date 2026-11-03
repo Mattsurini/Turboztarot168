@@ -1,7 +1,7 @@
 import type { Article, Category, Service } from "./types";
 
 // Seed content so the site is usable and fully renderable before real
-// Supabase credentials are supplied. Replace by rows in the database.
+// Notion credentials are supplied. Replace by rows in the databases.
 export const seedServices: Service[] = [
   {
     id: "s1",

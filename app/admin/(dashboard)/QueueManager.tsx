@@ -73,7 +73,7 @@ export default function QueueManager({ bookings }: { bookings: BookingRow[] }) {
         {bookings.map((b) => (
           <div key={b.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gold/25 bg-panel px-4 py-3">
             <div>
-              <p className="font-semibold">{b.name}{b.service_name ? <span className="text-violet-700">: {b.service_name}</span> : null}</p>
+              <p className="font-semibold">{(b.name || "ไม่ระบุชื่อ")}{b.service_name ? <span className="text-violet-700">: {b.service_name}</span> : null}</p>
               <p className="text-sm text-foreground/50">
                 {b.scheduled_at ? `${formatDate(b.scheduled_at)} ${formatTime(b.scheduled_at)}` : "ยังไม่ระบุเวลา"}
               </p>

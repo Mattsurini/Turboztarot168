@@ -1,14 +1,19 @@
 import { redirect } from "next/navigation";
-import { adminDb } from "@/lib/admin";
+import { getAdminUser } from "@/lib/admin";
+import { getArticlesAll, getCategoriesAll } from "@/lib/notion-data";
 import ArticlesManager, { type ArticleRow } from "../ArticlesManager";
 import type { CategoryRow } from "../CategoriesManager";
 
 export default async function AdminArticlesPage() {
-  const db = await adminDb();
-  if (!db) redirect("/admin/login");
+  if (!(await getAdminUser())) redirect("/admin/login");
   const [arts, cats] = await Promise.all([
-    db.from("articles").select("*").order("published_at", { ascending: false }),
-    db.from("categories").select("*").order("name"),
+    getArticlesAll(),
+    getCategoriesAll(),
   ]);
-  return <ArticlesManager articles={(arts.data as ArticleRow[]) || []} categories={(cats.data as CategoryRow[]) || []} />;
+  return (
+    <ArticlesManager
+      articles={arts as ArticleRow[]}
+      categories={cats as CategoryRow[]}
+    />
+  );
 }

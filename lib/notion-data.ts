@@ -212,41 +212,45 @@ function propsFor(table: "services" | "categories" | "articles" | "bookings", ro
   const rt = (v: unknown) => [{ text: { content: String(v ?? "") } }];
   const num = (v: unknown) => Number(v ?? 0);
   const p: Record<string, unknown> = {};
-  const set = (name: string, val: unknown) => {
-    if (row[name] !== undefined) p[name] = val;
+  // Guard on the ROW source key, not the Notion column name: column names
+  // ("Name", "Title") differ from row keys ("name", "title"), so checking
+  // row[columnName] silently dropped every title on create (bookings had
+  // nameless rows; services/articles/categories lost their titles too).
+  const set = (rowKey: string, col: string, val: unknown) => {
+    if (row[rowKey] !== undefined) p[col] = val;
   };
   switch (table) {
     case "services":
-      set(SVC.name, { title: rt(row.name) });
-      set(SVC.slug, { rich_text: rt(row.slug) });
-      set(SVC.shortDesc, { rich_text: rt(row.short_desc) });
-      set(SVC.description, { rich_text: rt(row.description) });
-      set(SVC.price, { rich_text: rt(row.price) });
-      set(SVC.duration, { number: num(row.duration_min) });
-      set(SVC.order, { number: num(row.order) });
-      set(SVC.active, { checkbox: Boolean(row.active) });
+      set("name", SVC.name, { title: rt(row.name) });
+      set("slug", SVC.slug, { rich_text: rt(row.slug) });
+      set("short_desc", SVC.shortDesc, { rich_text: rt(row.short_desc) });
+      set("description", SVC.description, { rich_text: rt(row.description) });
+      set("price", SVC.price, { rich_text: rt(row.price) });
+      set("duration_min", SVC.duration, { number: num(row.duration_min) });
+      set("order", SVC.order, { number: num(row.order) });
+      set("active", SVC.active, { checkbox: Boolean(row.active) });
       break;
     case "categories":
-      set(CAT.name, { title: rt(row.name) });
-      set(CAT.slug, { rich_text: rt(row.slug) });
+      set("name", CAT.name, { title: rt(row.name) });
+      set("slug", CAT.slug, { rich_text: rt(row.slug) });
       break;
     case "articles":
-      set(ART.title, { title: rt(row.title) });
-      set(ART.slug, { rich_text: rt(row.slug) });
-      set(ART.excerpt, { rich_text: rt(row.excerpt) });
-      set(ART.content, { rich_text: rt(row.content) });
-      set(ART.cover, { url: String(row.cover_image ?? "") });
-      set(ART.category, {
+      set("title", ART.title, { title: rt(row.title) });
+      set("slug", ART.slug, { rich_text: rt(row.slug) });
+      set("excerpt", ART.excerpt, { rich_text: rt(row.excerpt) });
+      set("content", ART.content, { rich_text: rt(row.content) });
+      set("cover_image", ART.cover, { url: String(row.cover_image ?? "") });
+      set("category_id", ART.category, {
         relation: row.category_id ? [{ id: String(row.category_id) }] : [],
       });
       break;
     case "bookings":
-      set(BK.name, { title: rt(row.name) });
-      set(BK.service, { rich_text: rt(row.service_name) });
-      set(BK.scheduledAt, {
+      set("name", BK.name, { title: rt(row.name) });
+      set("service_name", BK.service, { rich_text: rt(row.service_name) });
+      set("scheduled_at", BK.scheduledAt, {
         date: row.scheduled_at ? { start: String(row.scheduled_at) } : null,
       });
-      set(BK.status, { select: { name: String(row.status ?? "รับคิวแล้ว") } });
+      set("status", BK.status, { select: { name: String(row.status ?? "รับคิวแล้ว") } });
       break;
   }
   return p;
