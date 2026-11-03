@@ -26,20 +26,3 @@ export type Article = {
   published_at: string;
   category: Category | null;
 };
-
-export type AvailableSlot = {
-  start: string; // ISO, Asia/Bangkok
-  end: string;
-};
-
-export type RawEvent = {
-  start: Date;
-  end: Date;
-  /** true = this window is open for bookings; false = busy/not available. */
-  open: boolean;
-};
-
-export type DayAvailability = {
-  date: string; // YYYY-MM-DD
-  slots: AvailableSlot[];
-};

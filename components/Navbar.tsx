@@ -3,7 +3,7 @@ import Link from "next/link";
 const links = [
   { href: "/", label: "หน้าแรก" },
   { href: "/services", label: "บริการดูดวง" },
-  { href: "/check-booking", label: "เช็คคิวของฉัน" },
+  { href: "/queue", label: "คิวดูดวง" },
   { href: "/articles", label: "บทความ" },
   { href: "/about", label: "เกี่ยวกับพี่หมอ" },
   { href: "/terms", label: "ข้อตกลง" },

@@ -1,24 +1,29 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { adminDb } from "@/lib/admin";
+import { getAdminUser } from "@/lib/admin";
+import {
+  getArticlesAll,
+  getBookingsAll,
+  getServicesAll,
+} from "@/lib/notion-data";
+import type { ArticleRow } from "./ArticlesManager";
+import type { BookingRow } from "./QueueManager";
+import type { ServiceRow } from "./ServicesManager";
 
 export default async function AdminDashboardPage() {
-  const db = await adminDb();
-  if (!db) redirect("/admin/login");
+  if (!(await getAdminUser())) redirect("/admin/login");
 
   const [svc, arts, bks] = await Promise.all([
-    db.from("services").select("id", { count: "exact", head: true }),
-    db.from("articles").select("id", { count: "exact", head: true }),
-    db
-      .from("bookings")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "รอ"),
+    getServicesAll(),
+    getArticlesAll(),
+    getBookingsAll(),
   ]);
+  const pending = (bks as BookingRow[]).filter((b) => b.status === "รับคิวแล้ว").length;
 
   const cards = [
-    { href: "/admin/queue", label: "คิวรอ", value: bks.count ?? 0 },
-    { href: "/admin/services", label: "บริการ", value: svc.count ?? 0 },
-    { href: "/admin/articles", label: "บทความ", value: arts.count ?? 0 },
+    { href: "/admin/queue", label: "คิวรอ", value: pending },
+    { href: "/admin/services", label: "บริการ", value: (svc as ServiceRow[]).length },
+    { href: "/admin/articles", label: "บทความ", value: (arts as ArticleRow[]).length },
   ];
 
   return (

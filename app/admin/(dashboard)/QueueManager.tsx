@@ -13,7 +13,7 @@ export type BookingRow = {
   created_at: string | null;
 };
 
-const STATUSES = ["รอ", "ยืนยันแล้ว", "เสร็จสิ้น", "ยกเลิก"];
+const STATUSES = ["รับคิวแล้ว", "กำลังทำนาย", "ส่งคำทำนายแล้ว"];
 
 export default function QueueManager({ bookings }: { bookings: BookingRow[] }) {
   const [message, setMessage] = useState("");
@@ -60,7 +60,7 @@ export default function QueueManager({ bookings }: { bookings: BookingRow[] }) {
         <input name="name" required placeholder="ชื่อลูกค้า" className="rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
         <input name="service_name" placeholder="บริการ" className="rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
         <input name="scheduled_at" type="datetime-local" className="rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
-        <select name="status" defaultValue="รอ" className="rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
+        <select name="status" defaultValue="รับคิวแล้ว" className="rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
           {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
         <button type="submit" disabled={pending} className="rounded-full bg-violet-700 px-5 py-2 text-sm font-semibold text-black disabled:opacity-60 sm:col-span-4 sm:justify-self-start">

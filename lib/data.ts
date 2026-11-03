@@ -1,6 +1,17 @@
-import { contentSupabase } from "./supabase";
+import { isNotionConfigured } from "./notion";
+import {
+  getArticlesAll,
+  getBookingsAll,
+  getCategoriesAll,
+  getServicesAll,
+} from "./notion-data";
 import { seedArticles, seedCategories, seedServices } from "./seed";
 import type { Article, Category, Service } from "./types";
+
+/**
+ * Public content getters. Reads live from Notion when configured; falls back
+ * to seed data otherwise (same "runnable without keys" behavior as Supabase).
+ */
 
 type ServiceRow = {
   id: string;
@@ -29,15 +40,10 @@ function mapService(r: ServiceRow): Service {
 }
 
 export async function getServices(): Promise<Service[]> {
-  const db = contentSupabase();
-  if (!db) return seedServices.filter((s) => s.active);
-  const { data, error } = await db
-    .from("services")
-    .select("*")
-    .eq("active", true)
-    .order("order", { ascending: true });
-  if (error || !data) return seedServices.filter((s) => s.active);
-  return (data as ServiceRow[]).map(mapService);
+  if (!isNotionConfigured()) return seedServices.filter((s) => s.active);
+  const rows = (await getServicesAll()) as ServiceRow[];
+  const services = rows.map(mapService).filter((s) => s.active);
+  return services.length ? services : seedServices.filter((s) => s.active);
 }
 
 export async function getServiceBySlug(slug: string): Promise<Service | null> {
@@ -46,11 +52,9 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
 }
 
 export async function getCategories(): Promise<Category[]> {
-  const db = contentSupabase();
-  if (!db) return seedCategories;
-  const { data, error } = await db.from("categories").select("*").order("name");
-  if (error || !data || data.length === 0) return seedCategories;
-  return data as Category[];
+  if (!isNotionConfigured()) return seedCategories;
+  const rows = (await getCategoriesAll()) as Category[];
+  return rows.length ? rows : seedCategories;
 }
 
 type ArticleRow = {
@@ -62,10 +66,10 @@ type ArticleRow = {
   cover_image: string | null;
   published_at: string | null;
   category_id: string | null;
-  categories: { id: string; name: string; slug: string } | null;
 };
 
-function mapArticle(r: ArticleRow): Article {
+function mapArticle(r: ArticleRow, categories: Category[]): Article {
+  const c = categories.find((x) => x.id === r.category_id);
   return {
     id: r.id,
     slug: r.slug,
@@ -74,37 +78,39 @@ function mapArticle(r: ArticleRow): Article {
     content: r.content ?? "",
     cover_image: r.cover_image,
     published_at: r.published_at ?? new Date().toISOString(),
-    category: r.categories
-      ? { id: r.categories.id, name: r.categories.name, slug: r.categories.slug }
-      : null,
+    category: c ?? null,
   };
 }
 
 export async function getArticles(): Promise<Article[]> {
-  const db = contentSupabase();
-  if (!db) return seedArticles;
-  const { data, error } = await db
-    .from("articles")
-    .select("*, categories(id, name, slug)")
-    .order("published_at", { ascending: false });
-  if (error || !data) return seedArticles;
-  return (data as ArticleRow[]).map(mapArticle);
+  if (!isNotionConfigured()) return seedArticles;
+  const [rows, categories] = await Promise.all([
+    getArticlesAll(),
+    getCategories(),
+  ]);
+  const articles = (rows as ArticleRow[]).map((r) => mapArticle(r, categories));
+  return articles.length ? articles : seedArticles;
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  const db = contentSupabase();
-  if (!db) {
-    return seedArticles.find((a) => a.slug === slug) ?? null;
-  }
-  const { data, error } = await db
-    .from("articles")
-    .select("*, categories(id, name, slug)")
-    .eq("slug", slug)
-    .maybeSingle();
-  if (error || !data) {
-    const fallback = seedArticles.find((a) => a.slug === slug);
-    if (fallback) return fallback;
-    return null;
-  }
-  return mapArticle(data as ArticleRow);
+  for (const a of await getArticles()) if (a.slug === slug) return a;
+  return null;
+}
+
+export type CalendarBooking = {
+  id: string;
+  name: string;
+  status: string;
+  scheduled_at: string | null;
+};
+
+/** Public queue calendar rows: unfinished bookings with a set date. Empty seed when unconfigured. */
+export async function getBookingsForCalendar(): Promise<CalendarBooking[]> {
+  if (!isNotionConfigured()) return [];
+  const rows = (await getBookingsAll()) as CalendarBooking[];
+  return rows
+    .filter(
+      (b) => b.scheduled_at && b.status !== "ส่งคำทำนายแล้ว" && b.status !== "ยกเลิก"
+    )
+    .map(({ id, name, status, scheduled_at }) => ({ id, name, status, scheduled_at }));
 }

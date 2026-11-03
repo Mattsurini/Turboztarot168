@@ -4,6 +4,9 @@ import { siteCanonical, lineOaUrl } from "@/lib/site";
 import { formatThaiDate } from "@/lib/format";
 import ServicesSection from "@/components/ServicesSection";
 import JsonLd from "@/components/JsonLd";
+import QueueCalendar from "@/components/QueueCalendar";
+
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const services = await getServices();
@@ -81,6 +84,9 @@ export default async function HomePage() {
           />
         </div>
       </section>
+
+      {/* Queue calendar — the day's bookings, public */}
+      <QueueCalendar />
 
       {/* Latest articles — the features pages */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
