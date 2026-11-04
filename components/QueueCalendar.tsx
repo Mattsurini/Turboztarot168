@@ -1,5 +1,6 @@
 import { getBookingsForCalendar } from "@/lib/data";
 import { toDateKey } from "@/lib/format";
+import { lineOaUrl } from "@/lib/site";
 
 /**
  * Public queue calendar. Shows unfinished bookings (รับคิวแล้ว / กำลังทำนาย)
@@ -8,13 +9,6 @@ import { toDateKey } from "@/lib/format";
  * public noise stays at "who's still waiting". Server component reads from
  * Notion via lib/data.ts.
  */
-
-// Inline hex: the dark "ember" theme remaps Tailwind red-500/blue-500 to the
-// same dark amber, so status bars must not rely on theme color tokens.
-const STATUS_COLORS: Record<string, string> = {
-  "รับคิวแล้ว": "#ef4444",
-  "กำลังทำนาย": "#3b82f6",
-};
 
 /** Build the 6-row month calendar grid (weeks start Sunday) for a given month. */
 function monthCells(year: number, month: number): Date[] {
@@ -58,83 +52,65 @@ export default async function QueueCalendar() {
 
   const daysOfWeek = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
 
-  return (
-    <section className="mx-auto w-full max-w-5xl px-4 py-12 sm:px-6">
-      <div className="flex items-end justify-between border-b-2 border-ink pb-3">
-        <div>
-          <h1 className="font-display text-3xl font-bold">คิวดูดวง</h1>
-          <p className="mt-1 text-foreground/60">
-            แถบสีแดง: รอคำทำนาย · แถบสีน้ำเงิน: กำลังทำนาย
-          </p>
-        </div>
-      </div>
+  // การทำนายในคิว: กำลังทำนาย highlighted amber, the rest (waiting) crimson.
+  const chipClass = (status: string) =>
+    status === "กำลังทำนาย" ? "chip chip--doing" : "chip chip--wait";
 
-      <div className="mt-6">
-        <p className="text-center font-display text-lg font-bold">{monthName}</p>
-        <div className="mt-3 grid grid-cols-7 gap-px border border-ink/15 bg-ink/10 text-center">
-          {daysOfWeek.map((d) => (
-            <div key={d} className="bg-paper py-1 text-xs font-bold text-foreground/60">
-              {d}
-            </div>
-          ))}
-          {cells.map((date) => {
-            const key = toDateKey(date.toISOString());
-            const dayBookings = byDay.get(key);
-            const inMonth = bkk(date).getMonth() + 1 === month;
-            return (
-              <div
-                key={key}
-                className={`relative min-h-[108px] bg-paper p-1.5 text-left align-top ${
-                  inMonth ? "" : "opacity-40"
-                }`}
-              >
-                <p className="text-xs font-semibold text-foreground/70">
-                  {bkk(date).getDate()}
-                </p>
-                <div className="mt-1 space-y-1">
-                  {dayBookings?.slice(0, 2).map((b) => (
-                    <div
-                      key={b.id}
-                      title={b.name || "ไม่ระบุชื่อ"}
-                      style={{
-                        borderLeft: `4px solid ${STATUS_COLORS[b.status] ?? "#9ca3af"}`,
-                      }}
-                      className="bg-card px-1.5 py-1 text-xs font-bold leading-tight text-white"
-                    >
-                      <span className="block truncate">{b.name || "ไม่ระบุชื่อ"}</span>
-                    </div>
-                  ))}
-                  {dayBookings && dayBookings.length > 2 && (
-                    // Ties the row height to the 2 visible chips; the rest open
-                    // as an absolute popover so a busy day never stretches the row.
-                    <details className="group relative">
-                      <summary className="list-none cursor-pointer text-[11px] font-semibold text-foreground/60 hover:text-foreground">
-                        +{dayBookings.length - 2} คน
-                      </summary>
-                      <div
-                        className={`absolute top-full z-10 mt-1 max-h-48 w-44 space-y-1 overflow-y-auto rounded-sm border border-rule bg-panel/95 p-1.5 shadow-lg ${
-                          bkk(date).getDay() >= 4 ? "right-0" : "left-0"
-                        }`}
-                      >
-                        {dayBookings.slice(2).map((b) => (
-                          <div
-                            key={b.id}
-                            title={b.name || "ไม่ระบุชื่อ"}
-                            style={{
-                              borderLeft: `4px solid ${STATUS_COLORS[b.status] ?? "#9ca3af"}`,
-                            }}
-                            className="bg-card px-1.5 py-1 text-xs font-bold leading-tight text-white"
-                          >
-                            <span className="block truncate">{b.name || "ไม่ระบุชื่อ"}</span>
-                          </div>
+  return (
+    <section className="section section--dim">
+      <div className="wrap">
+        <div className="shead">
+          <p className="kicker">ดูว่าวันนี้ใครยังรออยู่บ้าง · จองผ่าน LINE โดยตรง</p>
+          <h2>คิวดูดวง</h2>
+          <div className="rule"></div>
+        </div>
+        <div className="panel">
+          <div className="panel__head">
+            <div className="glyph-line">✦ ✧ ✦</div>
+            <h3>{monthName}</h3>
+            <p>แถบสีแดง: รอคำทำนาย · แถบสีเหลือง: กำลังทำนาย</p>
+          </div>
+          <table className="cal" aria-label="ปฏิทินคิวดูดวงประจำเดือน">
+            <thead>
+              <tr>
+                {daysOfWeek.map((d) => (
+                  <th key={d}>{d}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from({ length: 6 }, (_, r) => (
+                <tr key={r}>
+                  {cells.slice(r * 7, r * 7 + 7).map((date) => {
+                    const key = toDateKey(date.toISOString());
+                    const dayBookings = byDay.get(key);
+                    const inMonth = bkk(date).getMonth() + 1 === month;
+                    return (
+                      <td key={key} className={inMonth ? "" : "out"}>
+                        <span className="dow">{bkk(date).getDate()}</span>
+                        {dayBookings?.map((b) => (
+                          <span key={b.id} className={chipClass(b.status)}>
+                            {b.name || "ไม่ระบุชื่อ"}
+                          </span>
                         ))}
-                      </div>
-                    </details>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="legend">
+            <span><span className="dot dot--wait"></span>รอคำทำนาย</span>
+            <span><span className="dot dot--doing"></span>กำลังทำนาย</span>
+          </div>
+        </div>
+        <div className="join">
+          <div className="glyph-line">✦ จองคิวดูดวงผ่าน LINE โดยตรง ✦</div>
+          <p>พี่หมอจะนัดวัน/เวลาที่แน่นอนผ่าน LINE และบันทึกลงคิวให้คุณ</p>
+          <a className="btn btn--line" href={lineOaUrl("สวัสดีครับ/ค่ะ ขอจองคิวดูดวงค่ะ")}>
+            จองคิวดูดวงผ่าน LINE
+          </a>
         </div>
       </div>
     </section>

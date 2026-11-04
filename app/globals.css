@@ -62,10 +62,10 @@
   --color-brass: var(--amber);
   --color-card: var(--card-bg);
 
-  --font-sans: var(--font-inter), "Inter", "Sarabun", "Noto Sans Thai",
-    "Tahoma", system-ui, sans-serif;
-  --font-display: var(--font-cinzel), var(--font-serif-thai), "Cinzel",
-    "Noto Serif Thai", "Georgia", serif;
+  --font-sans: var(--font-body), var(--font-thai), "Sarabun",
+    "Noto Sans Thai", "Tahoma", system-ui, sans-serif;
+  --font-display: var(--font-latin-display), var(--font-thai-display),
+    "Cinzel", "Trirong", "Georgia", serif;
   --font-mono: ui-monospace, "SFMono-Regular", monospace;
 
   /* Remap violet->gold ramp so any existing component usages follow the

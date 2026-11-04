@@ -36,11 +36,9 @@
   --glow-gold: 0 0 22px rgba(197, 142, 59, 0.45);
   --halo: radial-gradient(ellipse at 50% 0%, rgba(197, 142, 59, 0.22), transparent 60%);
 
-  /* ---- Type faces ---- */
-  --font-latin-display: "Cinzel", serif;        /* Latin wordmark / display */
-  --font-thai-display: "Trirong", serif;        /* Thai display (Cinzel has no Thai) */
-  --font-body: "Montserrat", "Prompt", sans-serif;
-  --font-thai: "Prompt", "Montserrat", sans-serif;
+  /* ---- Type faces ----
+     Provided by next/font in app/layout.tsx (--font-latin-display,
+     --font-thai-display, --font-body, --font-thai). */
 
   /* ---- Motion posture ---- */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);

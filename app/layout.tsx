@@ -1,27 +1,35 @@
 import type { Metadata } from "next";
-import { Inter, Noto_Serif_Thai, Cinzel } from "next/font/google";
+import { Cinzel, Montserrat, Prompt, Trirong } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { SITE } from "@/lib/site";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-// AETHEROS display face: Cinzel for the Latin wordmark. Cinzel has no Thai
-// glyphs, so Thai headings fall back to the Thai serif in the font stack.
+// Design faces (app/v2/design-tokens.css --font-*): Cinzel carries the Latin
+// wordmark; Montserrat is the Latin body, Prompt the Thai body, Trirong the
+// Thai display (Cinzel has no Thai glyphs).
 const cinzel = Cinzel({
-  variable: "--font-cinzel",
+  variable: "--font-latin-display",
   subsets: ["latin"],
   weight: ["700", "900"],
 });
 
-const display = Noto_Serif_Thai({
-  variable: "--font-serif-thai",
-  weight: ["400", "600", "700"],
+const montserrat = Montserrat({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const prompt = Prompt({
+  variable: "--font-thai",
   subsets: ["thai", "latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const trirong = Trirong({
+  variable: "--font-thai-display",
+  subsets: ["thai", "latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -46,7 +54,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="th"
-      className={`${inter.variable} ${cinzel.variable} ${display.variable} h-full antialiased`}
+      className={`${cinzel.variable} ${montserrat.variable} ${prompt.variable} ${trirong.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Navbar />
