@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Cinzel, Montserrat, Prompt, Trirong } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import SiteChrome from "@/components/SiteChrome";
 import { SITE } from "@/lib/site";
 
 // Design faces (app/v2/design-tokens.css --font-*): Cinzel carries the Latin
@@ -57,9 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${cinzel.variable} ${montserrat.variable} ${prompt.variable} ${trirong.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
-        <main className="flex flex-1 flex-col">{children}</main>
-        <Footer />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );
