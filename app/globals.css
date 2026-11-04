@@ -12,6 +12,10 @@
    in-thread, no render tier (puppeteer-core absent) — measured overflow, fold
    and wrap on the dev server at 1280/1440/1920/375, all green */
 @import "tailwindcss";
+@import "./v2/design-tokens.css";
+@import "./v2/styles.css";
+@import "./v2/detail.css";
+@import "./v2/carousel.css";
 
 /* AETHEROS world over Turboztarot — high-contrast ember on obsidian.
    Obsidian ground with a radial ember glow; burnished gold primary,
