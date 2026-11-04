@@ -14,6 +14,7 @@ import {
   updateRow,
   SERVICE_TABLES,
 } from "@/lib/notion-data";
+import { localInputToBangkokISO } from "@/lib/format";
 
 /*
  * Admin mutations. Every action re-verifies the admin session cookie before
@@ -186,7 +187,7 @@ export async function addBooking(formData: FormData): Promise<Result> {
   const row = {
     name: String(formData.get("name") || "").trim(),
     service_name: String(formData.get("service_name") || "").trim(),
-    scheduled_at: (String(formData.get("scheduled_at") || "") || null) as string | null,
+    scheduled_at: localInputToBangkokISO(String(formData.get("scheduled_at") || "")),
     status: String(formData.get("status") || "รับคิวแล้ว"),
   };
   if (!row.name) return { ok: false, error: "ต้องกรอกชื่อลูกค้า" };
