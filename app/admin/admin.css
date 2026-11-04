@@ -144,6 +144,31 @@
 .btn--block { width: 100%; }
 .btn--danger { background: var(--crimson); color: #fff; border-color: var(--crimson); font-weight: 600; }
 .btn--danger:hover { filter: brightness(1.1); }
+.btn--add { min-height: 48px; padding: 0 22px; white-space: nowrap; }
+.btn--add:disabled { opacity: 0.6; cursor: default; }
+
+/* Add-form row (Categories/Articles managers) — field look, 48px, stacks <=560px */
+.add-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.add-row input {
+  flex: 1; min-width: 140px; font-family: var(--font-body); font-size: 16px;
+  color: var(--ink); background: var(--abyss); border: 1px solid var(--rule);
+  border-radius: 4px; min-height: 48px; padding: 0 14px;
+}
+.add-row input::placeholder { color: var(--ink-faint); }
+.add-row input:focus { outline: none; border-color: var(--amber); box-shadow: 0 0 0 3px rgba(255, 179, 71, 0.15); }
+.add-row .btn { min-height: 48px; }
+
+/* AETHEROS notice — amber/gold warning banner */
+.notice {
+  margin-bottom: 16px; padding: 14px 18px; border-radius: 10px;
+  background: linear-gradient(180deg, var(--panel-warm), var(--panel));
+  border: 1px solid var(--gold);
+  font-family: var(--font-thai); font-size: 14.5px; color: var(--ivory); line-height: 1.6;
+}
+@media (max-width: 560px) {
+  .add-row { flex-direction: column; align-items: stretch; }
+  .add-row .btn { width: 100%; }
+}
 
 /* ============ DASHBOARD ============ */
 .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 30px; }

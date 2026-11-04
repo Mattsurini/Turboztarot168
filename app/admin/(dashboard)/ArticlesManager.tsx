@@ -55,7 +55,7 @@ export default function ArticlesManager({
         <h2 className="text-2xl font-bold">จัดการบทความ</h2>
         <button
           onClick={() => { setEditing({ ...empty }); setOpen((o) => !o); }}
-          className="rounded-full bg-violet-700 px-4 py-2 text-sm font-semibold text-black"
+          className="btn btn--gold btn--add"
         >
           + เพิ่มบทความ
         </button>
