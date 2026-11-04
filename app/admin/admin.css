@@ -149,12 +149,15 @@
 .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 30px; }
 .admin-head h1 { font-family: var(--font-thai-display); font-weight: 700; font-size: 26px; color: var(--gold); text-shadow: var(--glow-gold); }
 .admin-head__links { display: flex; align-items: center; gap: 10px; }
-.admin-head__links a {
+.admin-head__links a,
+.admin-head__links button {
   min-height: 44px; display: inline-flex; align-items: center; padding: 0 18px;
   font-family: var(--font-thai); font-weight: 600; font-size: 14.5px; color: var(--ink-soft);
   border: 1px solid var(--rule-soft); border-radius: 6px;
+  background: transparent; cursor: pointer;
 }
-.admin-head__links a:hover { color: var(--amber); border-color: var(--amber); }
+.admin-head__links a:hover,
+.admin-head__links button:hover { color: var(--amber); border-color: var(--amber); }
 
 .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-bottom: 26px; }
 .stat {
