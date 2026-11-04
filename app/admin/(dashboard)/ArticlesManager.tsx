@@ -63,48 +63,42 @@ export default function ArticlesManager({
       {message && <p className="mt-2 text-sm text-foreground/70">{message}</p>}
 
       {open && (
-        <form onSubmit={submit} className="mt-6 space-y-3 rounded-2xl border border-gold/25 bg-panel p-6">
+        <form onSubmit={submit} className="add-form rounded-2xl border border-gold/25 bg-panel">
           <input type="hidden" name="id" value={editing.id} />
-          <div className="grid gap-3 sm:grid-cols-3">
-            <label className="block text-sm">
+          <div className="add-form__row">
+            <label className="field">
               <span className="font-medium">ชื่อเรื่อง</span>
-              <input name="title" required value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
+              <input name="title" required value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} />
             </label>
-            <label className="block text-sm">
+            <label className="field">
               <span className="font-medium">slug</span>
-              <input name="slug" required value={editing.slug} onChange={(e) => setEditing({ ...editing, slug: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
+              <input name="slug" required value={editing.slug} onChange={(e) => setEditing({ ...editing, slug: e.target.value })} />
             </label>
-            <label className="block text-sm">
+            <label className="field">
               <span className="font-medium">หมวดหมู่</span>
-              <select name="category_id" value={editing.category_id ?? ""} onChange={(e) => setEditing({ ...editing, category_id: e.target.value || null })}
-                className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
+              <select name="category_id" value={editing.category_id ?? ""} onChange={(e) => setEditing({ ...editing, category_id: e.target.value || null })}>
                 <option value="">ไม่มีหมวดหมู่</option>
                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </label>
           </div>
-          <label className="block text-sm">
+          <label className="field">
             <span className="font-medium">URL ภาพปก (ไม่บังคับ)</span>
-            <input name="cover_image" value={editing.cover_image ?? ""} onChange={(e) => setEditing({ ...editing, cover_image: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
+            <input name="cover_image" value={editing.cover_image ?? ""} onChange={(e) => setEditing({ ...editing, cover_image: e.target.value })} />
           </label>
-          <label className="block text-sm">
+          <label className="field">
             <span className="font-medium">บทสรุป (excerpt)</span>
-            <textarea name="excerpt" rows={2} value={editing.excerpt ?? ""} onChange={(e) => setEditing({ ...editing, excerpt: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
+            <textarea name="excerpt" rows={2} value={editing.excerpt ?? ""} onChange={(e) => setEditing({ ...editing, excerpt: e.target.value })} />
           </label>
-          <label className="block text-sm">
+          <label className="field">
             <span className="font-medium">เนื้อหา</span>
-            <textarea name="content" rows={8} value={editing.content ?? ""} onChange={(e) => setEditing({ ...editing, content: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
+            <textarea name="content" rows={8} value={editing.content ?? ""} onChange={(e) => setEditing({ ...editing, content: e.target.value })} />
           </label>
-          <div className="flex gap-2">
-            <button type="submit" disabled={pending} className="rounded-full bg-violet-700 px-5 py-2 text-sm font-semibold text-black disabled:opacity-60">
+          <div className="form-actions">
+            <button type="submit" disabled={pending} className="btn btn--gold">
               {editing.id ? "บันทึก" : "เพิ่ม"}
             </button>
-            <button type="button" onClick={() => setOpen(false)} className="rounded-full border border-gold/30 px-5 py-2 text-sm">ยกเลิก</button>
+            <button type="button" onClick={() => setOpen(false)} className="btn btn--ghost">ยกเลิก</button>
           </div>
         </form>
       )}

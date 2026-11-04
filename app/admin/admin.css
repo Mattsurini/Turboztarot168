@@ -158,6 +158,18 @@
 .add-row input:focus { outline: none; border-color: var(--amber); box-shadow: 0 0 0 3px rgba(255, 179, 71, 0.15); }
 .add-row .btn { min-height: 48px; }
 
+/* Add-article form (ArticlesManager) — field component, 48px, 3-col top row */
+.add-form {
+  padding: 24px; margin-top: 20px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.add-form .field { margin-bottom: 0; }
+.add-form__row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 560px) { .add-form { padding: 20px; } }
+@media (max-width: 640px) {
+  .add-form__row { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* AETHEROS notice — amber/gold warning banner */
 .notice {
   margin-bottom: 16px; padding: 14px 18px; border-radius: 10px;
