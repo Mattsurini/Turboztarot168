@@ -136,14 +136,26 @@ async function queryAll(
 // ---------- Read: public content ----------
 
 /** The 5 service data sources, in map-overwrite order (Deep Reading last so
- *  its "เจาะลึกแบบจุกๆ" copy wins over the duplicate in Q and A). */
-const SERVICE_DBS = [
-  "37d60f08-01b5-808d-8cab-000b326872a3", // Q and A
-  "37d60f08-01b5-81db-ab71-000b6f3650b1", // Relationship Package
-  "37d60f08-01b5-8124-94ae-000b8909ffd6", // Special Pack
-  "37d60f08-01b5-81b7-8c3b-000b9e7244d7", // Call Pack
-  "2719f48c-6de7-4237-accf-d4631836de18", // Deep Reading
+ *  its "เจาะลึกแบบจุกๆ" copy wins over the duplicate in Q and A). `name` is
+ *  the admin-facing table choice; createRow targets these instead of the env. */
+const SERVICE_DBS: { id: string; name: string }[] = [
+  { id: "37d60f08-01b5-808d-8cab-000b326872a3", name: "Q and A" },
+  { id: "37d60f08-01b5-81db-ab71-000b6f3650b1", name: "Relationship Package" },
+  { id: "37d60f08-01b5-8124-94ae-000b8909ffd6", name: "Special Pack" },
+  { id: "37d60f08-01b5-81b7-8c3b-000b9e7244d7", name: "Call Pack" },
+  { id: "2719f48c-6de7-4237-accf-d4631836de18", name: "Deep Reading" },
 ];
+
+/** Tablenames the admin form offers for a new service (mirrors SERVICE_DBS names). */
+export const SERVICE_TABLES = SERVICE_DBS.map((d) => d.name);
+
+/** Pure helper: pick the data source a service row must be created under, from
+ *  the row's `table` (the admin-chosen SERVICE_TABLES name). Null => no match. */
+export function resolveServiceDataSource(row: Row): string | null {
+  const t = row["table"];
+  if (typeof t !== "string") return null;
+  return SERVICE_DBS.find((d) => d.name === t)?.id ?? null;
+}
 
 /** Strip HTML tags ("<p>…</p>", "<br>") from Notion rich text. */
 const stripHtml = (s: string): string =>
@@ -152,7 +164,7 @@ const stripHtml = (s: string): string =>
 export async function getServicesAll(): Promise<Row[]> {
   try {
     const pages = (
-      await Promise.all(SERVICE_DBS.map((id) => queryAll(id)))
+      await Promise.all(SERVICE_DBS.map((d) => queryAll(d.id)))
     ).flat();
 
     // Dedupe by slug, later DB overwriting earlier (Deep Reading's
@@ -252,14 +264,12 @@ function propsFor(table: "services" | "categories" | "articles" | "bookings", ro
   };
   switch (table) {
     case "services":
+      // Services live in the 5 shared tables (SERVICE_DBS): Name / Price /
+      // Detail / Due — not the legacy Services DB columns.
       set("name", SVC.name, { title: rt(row.name) });
-      set("slug", SVC.slug, { rich_text: rt(row.slug) });
-      set("short_desc", SVC.shortDesc, { rich_text: rt(row.short_desc) });
+      set("price", SVC.price, { number: num(row.price) });
       set("description", SVC.description, { rich_text: rt(row.description) });
-      set("price", SVC.price, { rich_text: rt(row.price) });
-      set("duration_min", SVC.duration, { number: num(row.duration_min) });
-      set("order", SVC.order, { number: num(row.order) });
-      set("active", SVC.active, { checkbox: Boolean(row.active) });
+      set("short_desc", SVC.shortDesc, { rich_text: rt(row.short_desc) });
       break;
     case "categories":
       set("name", CAT.name, { title: rt(row.name) });
