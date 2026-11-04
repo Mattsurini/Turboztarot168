@@ -86,15 +86,20 @@
 .cars-arrow {
   position: absolute; top: 50%; transform: translateY(-50%);
   width: 48px; height: 48px; border-radius: 50%; z-index: 4;
-  border: 0; background: rgba(10, 10, 10, 0.72);
-  color: var(--gold); font-size: 22px; line-height: 1; cursor: pointer;
+  border: 0; cursor: pointer;
+  background: rgba(255,255,255,0.10);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  color: #D2B48C; font-size: 20px; line-height: 1;
   display: flex; align-items: center; justify-content: center;
-  transition: box-shadow var(--dur) var(--ease), opacity var(--dur) var(--ease);
+  box-shadow: 0 0 0 1px rgba(197,142,59,0.45), 0 0 14px rgba(197,142,59,0.25);
+  transition: box-shadow var(--dur) var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
 .cars-arrow--prev { left: 4px; }
 .cars-arrow--next { right: 12px; }
 .cars-arrow:hover:not(:disabled), .cars-arrow:focus-visible {
-  box-shadow: var(--glow-gold), 0 0 26px rgba(255, 179, 71, 0.55);
+  background: rgba(255,255,255,0.16);
+  color: #C58E3B;
+  box-shadow: 0 0 0 1px rgba(197,142,59,0.8), 0 0 24px rgba(255,179,71,0.5);
 }
 .cars-arrow:disabled { opacity: 0; pointer-events: none; }
 
