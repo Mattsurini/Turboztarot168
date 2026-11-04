@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { getArticles, getServices } from "@/lib/data";
 import { siteCanonical, lineOaUrl } from "@/lib/site";
-import { formatPrice, formatThaiDate } from "@/lib/format";
+import { formatThaiDate } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
 import QueueCalendar from "@/components/QueueCalendar";
+import CarsCarousel from "@/components/CarsCarousel";
 
 export const dynamic = "force-dynamic";
 
@@ -160,22 +161,7 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="cars-rail">
-            <div className="cars">
-              {services.map((s, i) => (
-                <article className="car" key={s.id}>
-                  <span className="car__num">( {String(i + 1).padStart(3, "0")} )</span>
-                  <svg className="car__star" viewBox="0 0 64 64" aria-hidden="true">
-                    <use href="#em-star" transform="translate(32 34) scale(1.45)" />
-                  </svg>
-                  <h3 className="car__name">{s.name}</h3>
-                  <p className="car__detail">{s.short_desc}</p>
-                  <span className="car__price">{formatPrice(s.price)}</span>
-                  <Link className="car__btn" href={`/services/${s.slug}`}>
-                    รายละเอียด
-                  </Link>
-                </article>
-              ))}
-            </div>
+            <CarsCarousel services={services} />
           </div>
         </div>
       </section>

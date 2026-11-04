@@ -82,18 +82,21 @@
 }
 .car__btn:hover { background: rgba(197,142,59,0.14); color: var(--ivory); box-shadow: var(--glow-gold); }
 
-/* ---- Round next arrow, right edge ---- */
-.cars-next {
-  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-  width: 54px; height: 54px; border-radius: 50%; z-index: 4;
-  border: 1px solid var(--gold); background: rgba(10,10,10,0.82);
-  backdrop-filter: blur(4px); color: var(--amber); font-size: 22px; line-height: 1;
+/* ---- Round dark arrow buttons, overlaid at card edges ---- */
+.cars-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 48px; height: 48px; border-radius: 50%; z-index: 4;
+  border: 0; background: rgba(10, 10, 10, 0.72);
+  color: var(--gold); font-size: 22px; line-height: 1; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 18px rgba(197,142,59,0.4);
-  transition: background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+  transition: box-shadow var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
-.cars-next:hover { background: rgba(197,142,59,0.22); box-shadow: 0 0 26px rgba(255,179,71,0.6); }
-.cars-next:hover:not(:disabled) { transform: translateY(-50%); }
+.cars-arrow--prev { left: 4px; }
+.cars-arrow--next { right: 12px; }
+.cars-arrow:hover:not(:disabled), .cars-arrow:focus-visible {
+  box-shadow: var(--glow-gold), 0 0 26px rgba(255, 179, 71, 0.55);
+}
+.cars-arrow:disabled { opacity: 0; pointer-events: none; }
 
 /* ---- Responsive: ~1.2 visible @390 ---- */
 @media (max-width: 900px) {
@@ -103,7 +106,7 @@
   .cars-head { flex-direction: column; align-items: flex-start; gap: 14px; margin-bottom: 26px; }
   .cars-head__l h2 { font-size: 32px; }
   .cars { grid-auto-columns: 82%; gap: 18px; padding-bottom: 22px; padding-right: 62px; }
-  .cars-next { right: 4px; width: 46px; height: 46px; font-size: 18px; }
+  .cars-arrow--next { right: 4px; }
   .car { padding: 24px 20px 22px; }
   .car__name { font-size: 19px; }
   .car__price { font-size: 24px; }
@@ -111,5 +114,5 @@
 
 /* Reduced motion: kill hover lift + smooth scroll stays instant */
 @media (prefers-reduced-motion: reduce) {
-  .car, .cars-next, .car__btn, .cars-more { transition-duration: 0.001ms !important; }
+  .car, .cars-arrow, .car__btn, .cars-more { transition-duration: 0.001ms !important; }
 }

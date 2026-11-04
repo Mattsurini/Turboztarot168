@@ -140,7 +140,7 @@ h1, h2, h3, h4 { font-family: var(--font-thai-display); font-weight: 600; color:
 .nav__links a[aria-current] { color: var(--amber); }
 .nav__cta { margin-left: 6px; white-space: nowrap; }
 .nav .btn { min-height: 42px; padding: 0 20px; font-size: 14px; white-space: nowrap; }
-.nav__burger { display: none; background: none; border: 0; color: var(--ivory); font-size: 26px; line-height: 1; }
+.nav__burger { display: none; min-width: 44px; min-height: 44px; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 12px; background: #0a0a0a; border: 0; color: var(--gold); font-size: 24px; line-height: 1; cursor: pointer; }
 .nav__panel { display: none; }
 
 /* ---- Hero ---- */
@@ -342,7 +342,7 @@ h1, h2, h3, h4 { font-family: var(--font-thai-display); font-weight: 600; color:
   .mag { grid-template-columns: minmax(0, 1fr); gap: 30px; }
   .art--feature { grid-template-columns: minmax(0, 1fr); }
   .nav__links, .nav__cta { display: none; }
-  .nav__burger { display: block; }
+  .nav__burger { display: inline-flex; }
   .nav__panel { display: block; }
   .nav__panel ul { display: none; }
   .nav__panel.open ul { display: flex; flex-direction: column; gap: 6px; padding: 16px 24px 20px; border-top: 1px solid var(--rule-soft); animation: drop .3s var(--ease); }
