@@ -239,7 +239,8 @@ function propsFor(table: "services" | "categories" | "articles" | "bookings", ro
       set("slug", ART.slug, { rich_text: rt(row.slug) });
       set("excerpt", ART.excerpt, { rich_text: rt(row.excerpt) });
       set("content", ART.content, { rich_text: rt(row.content) });
-      set("cover_image", ART.cover, { url: String(row.cover_image ?? "") });
+      // Notion rejects an empty string for a url property; pass null to clear it.
+      set("cover_image", ART.cover, { url: row.cover_image ? String(row.cover_image) : null });
       set("category_id", ART.category, {
         relation: row.category_id ? [{ id: String(row.category_id) }] : [],
       });

@@ -27,3 +27,10 @@ export function formatTime(iso: string): string {
 export function formatThaiDate(iso: string): string {
   return fmt(new Date(iso), { day: "numeric", month: "long", year: "numeric" });
 }
+
+/** Service price for display: "299" -> "299 บาท"; an already-labelled value passes through. */
+export function formatPrice(price: string | null | undefined): string {
+  const p = (price ?? "").trim();
+  if (!p) return "";
+  return /^[\d,]+(\.\d+)?$/.test(p) ? `${p} บาท` : p;
+}

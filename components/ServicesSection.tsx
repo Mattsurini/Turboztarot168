@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Sparkles, Heart, Star, Phone } from "lucide-react";
+import { formatPrice } from "@/lib/format";
 import {
   ServiceCarousel,
   type Service as CardService,
@@ -27,12 +28,13 @@ const GRADIENTS: Record<string, string> = {
 export default function ServicesSection({
   items,
 }: {
-  items: { slug: string; name: string; short_desc: string }[];
+  items: { slug: string; name: string; short_desc: string; price: string }[];
 }) {
   const services: CardService[] = items.map((s, i) => ({
     number: String(i + 1).padStart(3, "0"),
     title: s.name,
     description: s.short_desc,
+    price: formatPrice(s.price),
     icon: ICONS[s.slug] ?? Sparkles,
     gradient: GRADIENTS[s.slug] ?? "from-[#3a2508] to-[#211405]",
     href: `/services/${s.slug}`,

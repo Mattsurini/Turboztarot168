@@ -42,8 +42,9 @@ function mapService(r: ServiceRow): Service {
 export async function getServices(): Promise<Service[]> {
   if (!isNotionConfigured()) return seedServices.filter((s) => s.active);
   const rows = (await getServicesAll()) as ServiceRow[];
-  const services = rows.map(mapService).filter((s) => s.active);
-  return services.length ? services : seedServices.filter((s) => s.active);
+  // Real rows only when Notion is configured: seed fallback here would show
+  // demo content on the live site and hide a broken/empty data source.
+  return rows.map(mapService).filter((s) => s.active);
 }
 
 export async function getServiceBySlug(slug: string): Promise<Service | null> {
@@ -53,8 +54,7 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
 
 export async function getCategories(): Promise<Category[]> {
   if (!isNotionConfigured()) return seedCategories;
-  const rows = (await getCategoriesAll()) as Category[];
-  return rows.length ? rows : seedCategories;
+  return (await getCategoriesAll()) as Category[];
 }
 
 type ArticleRow = {
@@ -88,8 +88,7 @@ export async function getArticles(): Promise<Article[]> {
     getArticlesAll(),
     getCategories(),
   ]);
-  const articles = (rows as ArticleRow[]).map((r) => mapArticle(r, categories));
-  return articles.length ? articles : seedArticles;
+  return (rows as ArticleRow[]).map((r) => mapArticle(r, categories));
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {

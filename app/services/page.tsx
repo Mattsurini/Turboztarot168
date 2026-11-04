@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getServices } from "@/lib/data";
+import { formatPrice } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "บริการดูดวง",
@@ -25,6 +26,9 @@ export default async function ServicesPage() {
             <h2 className="mt-4 text-xl font-bold group-hover:text-violet-700">
               {s.name}
             </h2>
+            {s.price ? (
+              <p className="mt-1 text-base font-bold text-violet-700">{formatPrice(s.price)}</p>
+            ) : null}
             <p className="mt-2 flex-1 text-sm text-foreground/60">{s.short_desc}</p>
             <span className="mt-4 text-sm font-medium text-violet-700">
               ดูรายละเอียด

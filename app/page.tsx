@@ -80,6 +80,7 @@ export default async function HomePage() {
               slug: s.slug,
               name: s.name,
               short_desc: s.short_desc,
+              price: s.price,
             }))}
           />
         </div>

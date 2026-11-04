@@ -218,6 +218,7 @@ export interface Service {
   number: string;
   title: string;
   description: string;
+  price: string;
   icon: React.ElementType;
   gradient: string;
   href: string;
@@ -242,6 +243,9 @@ const ServiceCard = ({ service }: { service: Service }) => {
       <div className="z-10">
         <h3 className="mb-2 text-lg font-semibold">{service.title}</h3>
         <p className="text-sm text-foreground/70">{service.description}</p>
+        {service.price ? (
+          <p className="mt-2 text-base font-bold text-foreground">{service.price}</p>
+        ) : null}
         <Link
           href={service.href}
           className="mt-6 inline-flex items-center border border-ink px-4 py-2 text-sm font-bold text-ink transition-[background-color,color] hover:bg-ink hover:text-paper"

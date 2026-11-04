@@ -21,6 +21,18 @@ import {
 
 type Result = { ok: boolean; error?: string };
 
+/** Map Notion API bloat to a short, actionable Thai message for the reader. */
+function friendlyError(e: unknown): string {
+  const msg = String((e as Error)?.message ?? e);
+  if (msg.includes("ยังไม่ได้ตั้งค่า Notion database ID"))
+    return "ระบบยังไม่ได้ตั้งค่าฐานข้อมูล — แจ้งผู้ดูแล";
+  if (msg.includes("failed validation") || msg.includes("should be defined"))
+    return "บันทึกไม่สำเร็จ — ติดต่อผู้ดูแลว่าฐานข้อมูลยังตั้งค่าไม่ครบ";
+  if (msg.includes("Unauthorized") || msg.includes("401"))
+    return "ไม่ได้รับอนุญาตให้เข้าถึงฐานข้อมูล — แจ้งผู้ดูแล";
+  return msg;
+}
+
 async function requireAdmin(): Promise<{ ok: true } | { ok: false; error: string }> {
   const user = await getAdminUser();
   if (!user) return { ok: false, error: "ไม่มีสิทธิ์เข้าถึง ต้องเข้าสู่ระบบเป็นผู้ดูแล" };
@@ -68,7 +80,7 @@ export async function upsertService(formData: FormData): Promise<Result> {
     if (id) await updateRow("services", id, row);
     else await createRow("services", row);
   } catch (e) {
-    return { ok: false, error: (e as Error).message };
+    return { ok: false, error: friendlyError(e) };
   }
   revalidatePath("/");
   revalidatePath("/services");
@@ -81,7 +93,7 @@ export async function deleteService(formData: FormData): Promise<Result> {
   try {
     await deleteRow(String(formData.get("id")));
   } catch (e) {
-    return { ok: false, error: (e as Error).message };
+    return { ok: false, error: friendlyError(e) };
   }
   revalidatePath("/services");
   return { ok: true };
@@ -102,7 +114,7 @@ export async function upsertCategory(formData: FormData): Promise<Result> {
     if (id) await updateRow("categories", id, row);
     else await createRow("categories", row);
   } catch (e) {
-    return { ok: false, error: (e as Error).message };
+    return { ok: false, error: friendlyError(e) };
   }
   revalidatePath("/articles");
   return { ok: true };
@@ -114,7 +126,7 @@ export async function deleteCategory(formData: FormData): Promise<Result> {
   try {
     await deleteRow(String(formData.get("id")));
   } catch (e) {
-    return { ok: false, error: (e as Error).message };
+    return { ok: false, error: friendlyError(e) };
   }
   revalidatePath("/articles");
   return { ok: true };
@@ -139,7 +151,7 @@ export async function upsertArticle(formData: FormData): Promise<Result> {
     if (id) await updateRow("articles", id, row);
     else await createRow("articles", row);
   } catch (e) {
-    return { ok: false, error: (e as Error).message };
+    return { ok: false, error: friendlyError(e) };
   }
   revalidatePath("/articles");
   revalidatePath(`/articles/${row.slug}`);
@@ -152,7 +164,7 @@ export async function deleteArticle(formData: FormData): Promise<Result> {
   try {
     await deleteRow(String(formData.get("id")));
   } catch (e) {
-    return { ok: false, error: (e as Error).message };
+    return { ok: false, error: friendlyError(e) };
   }
   revalidatePath("/articles");
   return { ok: true };
@@ -173,7 +185,7 @@ export async function addBooking(formData: FormData): Promise<Result> {
   try {
     await createRow("bookings", row);
   } catch (e) {
-    return { ok: false, error: (e as Error).message };
+    return { ok: false, error: friendlyError(e) };
   }
   revalidatePath("/admin/queue");
   return { ok: true };
@@ -187,7 +199,7 @@ export async function setBookingStatus(formData: FormData): Promise<Result> {
       status: String(formData.get("status") || "รับคิวแล้ว"),
     });
   } catch (e) {
-    return { ok: false, error: (e as Error).message };
+    return { ok: false, error: friendlyError(e) };
   }
   revalidatePath("/admin/queue");
   return { ok: true };
@@ -199,7 +211,7 @@ export async function deleteBooking(formData: FormData): Promise<Result> {
   try {
     await deleteRow(String(formData.get("id")));
   } catch (e) {
-    return { ok: false, error: (e as Error).message };
+    return { ok: false, error: friendlyError(e) };
   }
   revalidatePath("/admin/queue");
   return { ok: true };
