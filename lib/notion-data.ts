@@ -1,4 +1,5 @@
 import { requireNotion } from "./notion";
+import { SERVICE_SLUGS } from "./service-slugs";
 import type {
   CreatePageParameters,
   PageObjectResponse,
@@ -125,28 +126,57 @@ async function queryAll(
   });
   return res.results.filter(
     (r): r is PageObjectResponse =>
-      r.object === "page" && "properties" in r
+      r.object === "page" &&
+      "properties" in r &&
+      !r.archived &&
+      !r.in_trash
   );
 }
 
 // ---------- Read: public content ----------
 
+/** The 5 service data sources, in map-overwrite order (Deep Reading last so
+ *  its "เจาะลึกแบบจุกๆ" copy wins over the duplicate in Q and A). */
+const SERVICE_DBS = [
+  "37d60f08-01b5-808d-8cab-000b326872a3", // Q and A
+  "37d60f08-01b5-81db-ab71-000b6f3650b1", // Relationship Package
+  "37d60f08-01b5-8124-94ae-000b8909ffd6", // Special Pack
+  "37d60f08-01b5-81b7-8c3b-000b9e7244d7", // Call Pack
+  "2719f48c-6de7-4237-accf-d4631836de18", // Deep Reading
+];
+
+/** Strip HTML tags ("<p>…</p>", "<br>") from Notion rich text. */
+const stripHtml = (s: string): string =>
+  s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+
 export async function getServicesAll(): Promise<Row[]> {
   try {
-    const pages = await queryAll(DB.services, {
-      sorts: [{ property: SVC.order, direction: "ascending" }],
-    });
-    return pages.map((p) => ({
-      id: p.id,
-      slug: qrich(p, SVC.slug),
-      name: qtitle(p, SVC.name),
-      short_desc: qrich(p, SVC.shortDesc),
-      description: qrich(p, SVC.description),
-      price: qrich(p, SVC.price),
-      duration_min: qnum(p, SVC.duration),
-      order: qnum(p, SVC.order),
-      active: qbool(p, SVC.active),
-    }));
+    const pages = (
+      await Promise.all(SERVICE_DBS.map((id) => queryAll(id)))
+    ).flat();
+
+    // Dedupe by slug, later DB overwriting earlier (Deep Reading's
+    // "เจาะลึกแบบจุกๆ" replaces the Q and A copy); drop rows not in the map.
+    const bySlug = new Map<string, Row>();
+    for (const p of pages) {
+      const name = qtitle(p, "Name").replace(/\s+/g, " ").trim();
+      const spec = SERVICE_SLUGS[name];
+      if (!spec) continue;
+      const due = stripHtml(qrich(p, "Due"));
+      const detail = stripHtml(qrich(p, "Detail"));
+      bySlug.set(spec.slug, {
+        id: p.id,
+        slug: spec.slug,
+        name,
+        short_desc: detail,
+        description: due ? `${detail}\n\n${due}` : detail,
+        price: qnum(p, "Price")?.toString() ?? "",
+        duration_min: null,
+        order: spec.order,
+        active: true,
+      });
+    }
+    return [...bySlug.values()].sort((a, b) => (a.order as number) - (b.order as number));
   } catch {
     return [];
   }
