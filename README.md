@@ -40,7 +40,7 @@ npm scripts (`package.json`):
 | ตัวแปร | จำเป็น | รายละเอียด |
 |---|---|---|
 | `NOTION_API_KEY` | ใช่* | integration token — **ห้าม**เปิดเผย, ใช้ฝั่ง **server เท่านั้น** |
-| `NOTION_SERVICES_DB` | ใช่* | data source ID ที่ admin เขียนบริการ (อ่านหน้าสาธารณะมาจากชุด ID แบบ hardcode ดูหัวข้อ Notion) |
+| `NOTION_SERVICES_DB` | ไม่ | ไม่ใช้แล้ว — บริการอ่าน/เขียนจากชุด data source แบบ built-in 5 ชุด (ดูหัวข้อ Notion data sources) |
 | `NOTION_CATEGORIES_DB` | ใช่* | data source ID ของหมวดหมู่บทความ |
 | `NOTION_ARTICLES_DB` | ใช่* | data source ID ของบทความ |
 | `NOTION_BOOKINGS_DB` | ใช่* | data source ID ของคิว |
@@ -88,7 +88,7 @@ npm scripts (`package.json`):
 ## Notion data sources ที่ใช้กับบริการ
 
 - **หน้าบริการสาธารณะ** (`/services`) อ่านจาก **5 data source IDs แบบ hardcode** ใน `lib/notion-data.ts` (`SERVICE_DBS`): Q and A, Relationship Package, Special Pack, Call Pack, Deep Reading — บริการจะ map ผ่านชื่อใน `lib/service-slugs.ts`
-- **Admin เขียนบริการ** ไปที่ data source จาก `NOTION_SERVICES_DB` (env)
+- **Admin เขียนบริการ** ไปที่ data source ใดใน 5 ชุดนั้นตามที่เลือกในฟอร์ม (`table`) — ไม่ใช้ `NOTION_SERVICES_DB` อีกต่อไป
 - **Categories / Articles / Bookings** อ่าน–เขียนจาก data source ตาม env `NOTION_CATEGORIES_DB`, `NOTION_ARTICLES_DB`, `NOTION_BOOKINGS_DB`
 
 Public อ่านผ่าน token เดียวกัน (server-side); admin เขียนผ่าน server action ที่ตรวจ session ก่อนเสมอ ไม่มี key ไปถึง client

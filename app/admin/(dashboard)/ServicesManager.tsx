@@ -2,13 +2,16 @@
 
 import { useRef, useState, useTransition } from "react";
 import { deleteService, upsertService } from "../actions";
+import { SERVICE_TABLES } from "@/lib/notion-data";
 
 export type ServiceRow = {
   id: string;
+  table: string | null;
   slug: string;
   name: string;
   short_desc: string | null;
   description: string | null;
+  due: string | null;
   price: string | null;
   duration_min: number | null;
   order: number | null;
@@ -17,10 +20,12 @@ export type ServiceRow = {
 
 const empty = {
   id: "",
+  table: "",
   slug: "",
   name: "",
   short_desc: "",
   description: "",
+  due: "",
   price: "",
   duration_min: 45,
   order: 0,
@@ -78,9 +83,25 @@ export default function ServicesManager({ services }: { services: ServiceRow[] }
           <input type="hidden" name="id" value={editing.id} />
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="ชื่อบริการ" name="name" value={editing.name} onChange={(v) => setEditing({ ...editing, name: v })} required />
-            <Field label="slug" name="slug" value={editing.slug} onChange={(v) => setEditing({ ...editing, slug: v })} required />
+            <label className="block text-sm">
+              <span className="font-medium">ตารางบริการ</span>
+              <select
+                name="table"
+                value={editing.table ?? ""}
+                onChange={(e) => setEditing({ ...editing, table: e.target.value })}
+                className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
+              >
+                <option value="" disabled>เลือกตารางบริการ</option>
+                {SERVICE_TABLES.map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </label>
           </div>
-          <Field label="คำอธิบายสั้น" name="short_desc" value={editing.short_desc ?? ""} onChange={(v) => setEditing({ ...editing, short_desc: v })} />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="คำอธิบายสั้น" name="short_desc" value={editing.short_desc ?? ""} onChange={(v) => setEditing({ ...editing, short_desc: v })} />
+            <Field label="Due" name="due" value={editing.due ?? ""} onChange={(v) => setEditing({ ...editing, due: v })} />
+          </div>
           <label className="block text-sm">
             <span className="font-medium">รายละเอียด</span>
             <textarea

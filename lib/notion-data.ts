@@ -24,13 +24,9 @@ const DB = {
 
 const SVC = {
   name: "Name",
-  slug: "slug",
-  shortDesc: "short_desc",
-  description: "description",
-  price: "price",
-  duration: "duration_min",
-  order: "order",
-  active: "active",
+  price: "Price",
+  detail: "Detail",
+  due: "Due",
 } as const;
 
 const CAT = { name: "Name", slug: "slug" } as const;
@@ -268,8 +264,8 @@ function propsFor(table: "services" | "categories" | "articles" | "bookings", ro
       // Detail / Due — not the legacy Services DB columns.
       set("name", SVC.name, { title: rt(row.name) });
       set("price", SVC.price, { number: num(row.price) });
-      set("description", SVC.description, { rich_text: rt(row.description) });
-      set("short_desc", SVC.shortDesc, { rich_text: rt(row.short_desc) });
+      set("description", SVC.detail, { rich_text: rt(row.description) });
+      set("due", SVC.due, { rich_text: rt(row.due) });
       break;
     case "categories":
       set("name", CAT.name, { title: rt(row.name) });
@@ -304,8 +300,16 @@ export async function createRow(
 ): Promise<void> {
   // env values are data-source ids (read path uses dataSources.query too);
   // pages must be created under the data source, not a database.
+  let ds: string;
+  if (table === "services") {
+    const id = resolveServiceDataSource(row);
+    if (!id) throw new Error("กรุณาเลือกตารางบริการ");
+    ds = id;
+  } else {
+    ds = DB[table];
+  }
   await requireNotion().pages.create({
-    parent: { data_source_id: DB[table] },
+    parent: { data_source_id: ds },
     properties: propsFor(table, row) as NonNullable<
       CreatePageParameters["properties"]
     >,
