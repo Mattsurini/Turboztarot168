@@ -50,7 +50,11 @@ export async function loginAction(formData: FormData): Promise<Result> {
   if (!checkAdminPassword(password)) {
     return { ok: false, error: "รหัสผ่านไม่ถูกต้อง" };
   }
-  await createAdminSession();
+  try {
+    await createAdminSession();
+  } catch (e) {
+    return { ok: false, error: friendlyError(e) };
+  }
   redirect("/admin");
 }
 
