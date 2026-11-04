@@ -2,13 +2,16 @@
 
 import { useRef, useState, useTransition } from "react";
 import { deleteService, upsertService } from "../actions";
+import { SERVICE_TABLES } from "@/lib/notion-data";
 
 export type ServiceRow = {
   id: string;
+  table: string | null;
   slug: string;
   name: string;
   short_desc: string | null;
   description: string | null;
+  due: string | null;
   price: string | null;
   duration_min: number | null;
   order: number | null;
@@ -17,10 +20,12 @@ export type ServiceRow = {
 
 const empty = {
   id: "",
+  table: "",
   slug: "",
   name: "",
   short_desc: "",
   description: "",
+  due: "",
   price: "",
   duration_min: 45,
   order: 0,
@@ -62,11 +67,12 @@ export default function ServicesManager({ services }: { services: ServiceRow[] }
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">จัดการบริการ</h2>
         <button
+          type="button"
           onClick={() => {
             setEditing({ ...empty });
             setOpen((o) => !o);
           }}
-          className="rounded-full bg-violet-700 px-4 py-2 text-sm font-semibold text-black"
+          className="btn btn--gold"
         >
           + เพิ่มบริการ
         </button>
@@ -74,89 +80,186 @@ export default function ServicesManager({ services }: { services: ServiceRow[] }
       {message && <p className="mt-2 text-sm text-foreground/70">{message}</p>}
 
       {open && (
-        <form ref={formRef} onSubmit={submit} className="mt-6 space-y-3 rounded-2xl border border-gold/25 bg-panel p-6">
-          <input type="hidden" name="id" value={editing.id} />
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Field label="ชื่อบริการ" name="name" value={editing.name} onChange={(v) => setEditing({ ...editing, name: v })} required />
-            <Field label="slug" name="slug" value={editing.slug} onChange={(v) => setEditing({ ...editing, slug: v })} required />
-          </div>
-          <Field label="คำอธิบายสั้น" name="short_desc" value={editing.short_desc ?? ""} onChange={(v) => setEditing({ ...editing, short_desc: v })} />
-          <label className="block text-sm">
-            <span className="font-medium">รายละเอียด</span>
-            <textarea
-              name="description"
-              value={editing.description ?? ""}
-              onChange={(e) => setEditing({ ...editing, description: e.target.value })}
-              rows={4}
-              className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
-            />
-          </label>
-          <div className="grid gap-3 sm:grid-cols-4">
-            <Field label="ราคา" name="price" value={editing.price ?? ""} onChange={(v) => setEditing({ ...editing, price: v })} />
-            <Field label="นาที/ครั้ง" name="duration_min" type="number" value={String(editing.duration_min ?? "")} onChange={(v) => setEditing({ ...editing, duration_min: Number(v) })} />
-            <Field label="ลำดับ" name="order" type="number" value={String(editing.order ?? "")} onChange={(v) => setEditing({ ...editing, order: Number(v) })} />
-            <label className="flex items-end gap-2 pb-2 text-sm font-medium">
+        <section className="form-card mt-6" aria-label="แบบฟอร์มบริการ">
+          <form ref={formRef} onSubmit={submit}>
+            <input type="hidden" name="id" value={editing.id} />
+
+            <div className="field">
+              <label htmlFor="svc-table">ตาราง</label>
+              <div className="select-wrap">
+                <select
+                  id="svc-table"
+                  name="table"
+                  value={editing.table ?? ""}
+                  onChange={(e) => setEditing({ ...editing, table: e.target.value })}
+                  disabled={pending}
+                >
+                  <option value="" disabled>เลือกตารางบริการ</option>
+                  {SERVICE_TABLES.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="svc-name">ชื่อบริการ</label>
               <input
-                type="checkbox"
-                name="active"
-                checked={!!editing.active}
-                onChange={(e) => setEditing({ ...editing, active: e.target.checked })}
-                className="h-4 w-4"
+                id="svc-name"
+                name="name"
+                type="text"
+                value={editing.name}
+                onChange={(e) => setEditing({ ...editing, name: e.target.value })}
+                required
+                placeholder="ชื่อบริการ"
+                disabled={pending}
               />
-              ใช้งานอยู่
-            </label>
-          </div>
-          <div className="flex gap-2">
-            <button
-              type="submit"
-              disabled={pending}
-              className="rounded-full bg-violet-700 px-5 py-2 text-sm font-semibold text-black disabled:opacity-60"
-            >
-              {editing.id ? "บันทึก" : "เพิ่ม"}
-            </button>
-            <button type="button" onClick={() => setOpen(false)} className="rounded-full border border-gold/30 px-5 py-2 text-sm">
-              ยกเลิก
-            </button>
-          </div>
-        </form>
+            </div>
+
+            <div className="field">
+              <label htmlFor="svc-short">คำอธิบายสั้น</label>
+              <input
+                id="svc-short"
+                name="short_desc"
+                type="text"
+                value={editing.short_desc ?? ""}
+                onChange={(e) => setEditing({ ...editing, short_desc: e.target.value })}
+                placeholder="คำอธิบายสั้น"
+                disabled={pending}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="svc-due">Due</label>
+              <input
+                id="svc-due"
+                name="due"
+                type="text"
+                value={editing.due ?? ""}
+                onChange={(e) => setEditing({ ...editing, due: e.target.value })}
+                placeholder="ตัวอย่าง เช่น 3 วัน"
+                disabled={pending}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="svc-detail">รายละเอียด</label>
+              <textarea
+                id="svc-detail"
+                name="description"
+                value={editing.description ?? ""}
+                onChange={(e) => setEditing({ ...editing, description: e.target.value })}
+                placeholder="ตัวอย่างรายละเอียดของบริการ"
+                disabled={pending}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="svc-price">ราคา (บาท)</label>
+              <input
+                id="svc-price"
+                name="price"
+                type="number"
+                min={0}
+                step={1}
+                value={editing.price ?? ""}
+                onChange={(e) => setEditing({ ...editing, price: e.target.value })}
+                placeholder="เช่น 300"
+                disabled={pending}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="svc-min">นาที/ครั้ง</label>
+              <input
+                id="svc-min"
+                name="duration_min"
+                type="number"
+                value={String(editing.duration_min ?? "")}
+                onChange={(e) => setEditing({ ...editing, duration_min: Number(e.target.value) })}
+                disabled={pending}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="svc-order">ลำดับ</label>
+              <input
+                id="svc-order"
+                name="order"
+                type="number"
+                value={String(editing.order ?? "")}
+                onChange={(e) => setEditing({ ...editing, order: Number(e.target.value) })}
+                disabled={pending}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="svc-active" className="flex min-h-[44px] items-center gap-2">
+                <input
+                  id="svc-active"
+                  type="checkbox"
+                  name="active"
+                  checked={!!editing.active}
+                  onChange={(e) => setEditing({ ...editing, active: e.target.checked })}
+                  disabled={pending}
+                />
+                ใช้งานอยู่
+              </label>
+            </div>
+
+            <div className="form-actions">
+              <button type="submit" className="btn btn--gold" disabled={pending}>
+                {editing.id ? "บันทึก" : "เพิ่ม"}
+              </button>
+              <button type="button" className="btn" onClick={() => setOpen(false)}>
+                ยกเลิก
+              </button>
+            </div>
+          </form>
+        </section>
       )}
 
-      <div className="mt-6 space-y-3">
-        {services.map((s) => (
-          <div key={s.id} className="flex items-center justify-between rounded-xl border border-gold/25 bg-panel px-4 py-3">
-            <div>
-              <p className="font-semibold">{s.name}</p>
-              <p className="text-sm text-foreground/50">
-                /{s.slug} · {s.price || "ยังไม่ตั้งราคา"} · {s.active ? "ใช้งาน" : "ปิด"}
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={() => { setEditing(s); setOpen(true); }} className="rounded-full border border-gold/30 px-3 py-1 text-sm">แก้ไข</button>
-              <button onClick={() => remove(s)} className="rounded-full border border-red-200 px-3 py-1 text-sm text-red-600">ลบ</button>
-            </div>
-          </div>
-        ))}
+      <div className="table-wrap mt-6">
+        <table className="table" aria-label="รายการบริการ">
+          <thead>
+            <tr>
+              <th>ชื่อ</th>
+              <th>ราคา</th>
+              <th>สถานะ</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {services.length === 0 && (
+              <tr>
+                <td colSpan={4}>ยังไม่มีบริการ</td>
+              </tr>
+            )}
+            {services.map((s) => (
+              <tr key={s.id}>
+                <td data-label="ชื่อ">
+                  <span className="font-semibold">{s.name}</span>
+                  <span className="text-foreground/50"> /{s.slug}</span>
+                </td>
+                <td data-label="ราคา">{s.price || "ยังไม่ตั้งราคา"}</td>
+                <td data-label="สถานะ">
+                  <span className={`chip ${s.active ? "chip--green" : "chip--crimson"}`}>
+                    {s.active ? "ใช้งาน" : "ปิด"}
+                  </span>
+                </td>
+                <td data-label="จัดการ">
+                  <button type="button" className="btn" onClick={() => { setEditing(s); setOpen(true); }} disabled={pending}>
+                    แก้ไข
+                  </button>
+                  <button type="button" className="btn--del" onClick={() => remove(s)} disabled={pending}>
+                    ลบ
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
-  );
-}
-
-function Field({
-  label, name, value, onChange, type = "text", required,
-}: {
-  label: string; name: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean;
-}) {
-  return (
-    <label className="block text-sm">
-      <span className="font-medium">{label}</span>
-      <input
-        name={name}
-        type={type}
-        required={required}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
-      />
-    </label>
   );
 }

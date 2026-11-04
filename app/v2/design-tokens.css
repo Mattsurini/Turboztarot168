@@ -1,0 +1,46 @@
+/* Hallmark · v2.0.0 · Turboztarot168 v2 premium · luxury occult editorial
+   critique: rebuilt from the rejected v1 — flat boxed cards, hairline borders
+   and centered generic stacks lifted into an obsidian atelier with fanned
+   tarot, filigree card shapes, layered ember light and grain. Brand locked by
+   the AETHEROS book (design/brand-book.html); palette and faces exact.
+   redesign: full · keep source content and LINE handoff · locked system
+   =========================================================================
+   TOKENS — single source of truth for the v2 design system.
+   Port target: site/app/globals.css (comment-blocked @import order). */
+
+:root {
+  /* ---- AETHEROS brand primitives (exact from book) ---- */
+  --obsidian: #0a0a0a;
+  --gold: #c58e3b;
+  --amber: #ffb347;
+  --ivory: #d2b48c;
+  --crimson: #8b0000;
+
+  /* ---- Derived surfaces (ember-toned, no pastels) ---- */
+  --abyss: #050505;            /* footer / deepest ground */
+  --panel: #111010;            /* raised panel on obsidian */
+  --panel-warm: #161310;       /* warm raised surface */
+  --line: #06c755;             /* LINE brand (kept from source) */
+
+  /* ---- Text roles ---- */
+  --ink: #f2ead9;              /* primary text — warm bone */
+  --ink-soft: rgba(210, 180, 140, 0.78);
+  --ink-faint: rgba(210, 180, 140, 0.52);
+
+  /* ---- Border / rule ---- */
+  --rule: rgba(197, 142, 59, 0.45);      /* deliberately NOT thin */
+  --rule-soft: rgba(197, 142, 59, 0.22);
+
+  /* ---- Glows (the book's "Divine Power" amber) ---- */
+  --glow-amber: 0 0 26px rgba(255, 179, 71, 0.5);
+  --glow-gold: 0 0 22px rgba(197, 142, 59, 0.45);
+  --halo: radial-gradient(ellipse at 50% 0%, rgba(197, 142, 59, 0.22), transparent 60%);
+
+  /* ---- Type faces ----
+     Provided by next/font in app/layout.tsx (--font-latin-display,
+     --font-thai-display, --font-body, --font-thai). */
+
+  /* ---- Motion posture ---- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.45s;
+}

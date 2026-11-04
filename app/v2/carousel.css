@@ -1,0 +1,123 @@
+/* ===== carousel.css — home ดูดวง scroll-snap strip (AETHEROS, appended page) =====
+   New section CSS only; keeps styles.css untouched. Tokens resolve through
+   design-tokens.css :root. Cards: amber-brown gradient, glow, no thin borders. */
+
+/* ---- Head row: title + subtitle left, อ่านต่อ right ---- */
+.cars-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; margin-bottom: 40px; position: relative; z-index: 2;
+}
+.cars-head__l h2 {
+  font-family: var(--font-thai-display); font-weight: 700; font-size: 46px;
+  color: var(--gold); letter-spacing: 0.02em; text-shadow: var(--glow-gold);
+}
+.cars-sub {
+  margin-top: 8px; font-family: var(--font-thai); font-size: 16px;
+  color: var(--ink-soft); letter-spacing: 0;
+}
+.cars-more {
+  flex: 0 0 auto; font-family: var(--font-thai); font-weight: 600; font-size: 16px;
+  color: var(--amber); padding-bottom: 4px; border-bottom: 1px solid var(--gold);
+  transition: color var(--dur) var(--ease);
+}
+.cars-more:hover { color: var(--ivory); }
+
+/* ---- Scroll-snap track: 3 visible @1440 ---- */
+.cars-rail { position: relative; z-index: 2; }
+.cars {
+  position: relative; z-index: 2;
+  display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 60px) / 3);
+  gap: 30px;
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; padding: 6px 70px 26px 2px;
+  scroll-padding: 2px;
+}
+.cars::-webkit-scrollbar { display: none; }
+
+/* ---- Card: AETHEROS amber-brown gradient panel, glow, no thin border ---- */
+.car {
+  position: relative; display: flex; flex-direction: column;
+  padding: 30px 26px 26px; border-radius: 18px; overflow: hidden;
+  background: linear-gradient(165deg, #19140f 0%, #0d0a07 60%, #060504 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 26px 48px -30px rgba(0,0,0,0.9);
+  scroll-snap-align: start;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.car::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 90% at 50% -10%, rgba(197,142,59,0.20), transparent 56%);
+}
+.car:hover { transform: translateY(-8px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 34px 64px -30px rgba(0,0,0,0.92), var(--glow-amber); }
+
+.car__num {
+  font-family: var(--font-latin-display); color: var(--ink-faint);
+  font-size: 13px; letter-spacing: 0.32em; position: relative;
+}
+.car__star { width: 34px; height: 34px; margin: 12px 0 6px; position: relative; filter: drop-shadow(0 0 10px rgba(255,179,71,0.55)); }
+.car__badge {
+  align-self: flex-start; margin: 4px 0 0; padding: 3px 10px; border-radius: 5px;
+  background: var(--crimson); color: #f5e6d0; font-family: var(--font-thai);
+  font-size: 11px; font-weight: 600; box-shadow: 0 0 12px rgba(139,0,0,0.4); position: relative;
+}
+.car__name {
+  margin-top: 10px; font-family: var(--font-latin-display), var(--font-thai-display);
+  font-weight: 700; font-size: 21px; line-height: 1.3; color: var(--gold);
+  text-wrap: balance; min-width: 0; overflow-wrap: break-word; position: relative;
+}
+.car__detail {
+  margin-top: 10px; font-family: var(--font-thai); font-size: 14px; line-height: 1.65;
+  color: var(--ink-soft); min-width: 0; overflow-wrap: break-word; position: relative;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.car__price {
+  margin-top: 14px; font-family: var(--font-latin-display); font-weight: 900;
+  font-size: 26px; color: var(--gold); text-shadow: var(--glow-gold); position: relative;
+}
+.car__btn {
+  margin-top: 18px; align-self: flex-start; position: relative;
+  font-family: var(--font-thai); font-weight: 600; font-size: 14px; letter-spacing: 0;
+  color: var(--amber); border: 1px solid var(--gold); border-radius: 30px;
+  padding: 10px 22px; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.car__btn:hover { background: rgba(197,142,59,0.14); color: var(--ivory); box-shadow: var(--glow-gold); }
+
+/* ---- Round dark arrow buttons, overlaid at card edges ---- */
+.cars-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 48px; height: 48px; border-radius: 50%; z-index: 4;
+  border: 0; cursor: pointer;
+  background: rgba(255,255,255,0.10);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  color: #D2B48C; font-size: 20px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 1px rgba(197,142,59,0.45), 0 0 14px rgba(197,142,59,0.25);
+  transition: box-shadow var(--dur) var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease), opacity var(--dur) var(--ease);
+}
+.cars-arrow--prev { left: 4px; }
+.cars-arrow--next { right: 12px; }
+.cars-arrow:hover:not(:disabled), .cars-arrow:focus-visible {
+  background: rgba(255,255,255,0.16);
+  color: #C58E3B;
+  box-shadow: 0 0 0 1px rgba(197,142,59,0.8), 0 0 24px rgba(255,179,71,0.5);
+}
+.cars-arrow:disabled { opacity: 0; pointer-events: none; }
+
+/* ---- Responsive: ~1.2 visible @390 ---- */
+@media (max-width: 900px) {
+  .cars { grid-auto-columns: calc((100% - 24px) / 1.5); gap: 18px; }
+}
+@media (max-width: 640px) {
+  .cars-head { flex-direction: column; align-items: flex-start; gap: 14px; margin-bottom: 26px; }
+  .cars-head__l h2 { font-size: 32px; }
+  .cars { grid-auto-columns: 82%; gap: 18px; padding-bottom: 22px; padding-right: 62px; }
+  .cars-arrow--next { right: 4px; }
+  .car { padding: 24px 20px 22px; }
+  .car__name { font-size: 19px; }
+  .car__price { font-size: 24px; }
+}
+
+/* Reduced motion: kill hover lift + smooth scroll stays instant */
+@media (prefers-reduced-motion: reduce) {
+  .car, .cars-arrow, .car__btn, .cars-more { transition-duration: 0.001ms !important; }
+}

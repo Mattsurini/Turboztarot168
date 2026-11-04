@@ -9,7 +9,7 @@ export default async function AdminServicesPage() {
   const services = (await getServicesAll()) as ServiceRow[];
   return (
     <>
-      <ConfigBanner label="บริการ" configured={Boolean(process.env.NOTION_SERVICES_DB)} />
+      <ConfigBanner label="บริการ" configured={Boolean(process.env.NOTION_API_KEY)} />
       <ServicesManager services={services} />
     </>
   );

@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { loginAction } from "../actions";
+import "../admin.css";
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -21,36 +22,41 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="mx-auto flex max-w-sm flex-1 flex-col justify-center px-4 py-16">
-      <h1 className="text-2xl font-bold">เข้าสู่ระบบผู้ดูแล</h1>
-      <form onSubmit={onSubmit} className="mt-6 space-y-4">
-        <div>
-          <label className="text-sm font-medium">ชื่อผู้ใช้</label>
-          <input
-            type="text"
-            name="username"
-            required
-            className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
-          />
-        </div>
-        <div>
-          <label className="text-sm font-medium">รหัสผ่าน</label>
-          <input
-            type="password"
-            name="password"
-            required
-            className="mt-1 w-full rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
-          />
-        </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button
-          type="submit"
-          disabled={pending}
-          className="w-full rounded-full bg-violet-700 px-6 py-3 font-semibold text-black hover:bg-violet-800 disabled:opacity-60"
-        >
-          {pending ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
-        </button>
-      </form>
+    <div className="admin-root">
+      <div className="grain" aria-hidden="true" />
+      <main className="login__card">
+        <p className="login__brand">AETHEROS</p>
+        <div className="login__rule" aria-hidden="true" />
+        <h1 className="login__title">เข้าสู่ระบบ</h1>
+
+        <form className="login__form" onSubmit={onSubmit}>
+          <div className="field">
+            <label htmlFor="username">ชื่อผู้ใช้</label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              autoComplete="username"
+              required
+              autoFocus
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="password">รหัสผ่าน</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+            />
+          </div>
+          {error && <p className="login__note">{error}</p>}
+          <button className="btn btn--gold" type="submit" disabled={pending}>
+            {pending ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
+          </button>
+        </form>
+      </main>
     </div>
   );
 }

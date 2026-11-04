@@ -1,4 +1,5 @@
 import { requireNotion } from "./notion";
+import { SERVICE_SLUGS } from "./service-slugs";
 import type {
   CreatePageParameters,
   PageObjectResponse,
@@ -23,13 +24,9 @@ const DB = {
 
 const SVC = {
   name: "Name",
-  slug: "slug",
-  shortDesc: "short_desc",
-  description: "description",
-  price: "price",
-  duration: "duration_min",
-  order: "order",
-  active: "active",
+  price: "Price",
+  detail: "Detail",
+  due: "Due",
 } as const;
 
 const CAT = { name: "Name", slug: "slug" } as const;
@@ -125,28 +122,75 @@ async function queryAll(
   });
   return res.results.filter(
     (r): r is PageObjectResponse =>
-      r.object === "page" && "properties" in r
+      r.object === "page" &&
+      "properties" in r &&
+      !r.archived &&
+      !r.in_trash
   );
 }
 
 // ---------- Read: public content ----------
 
+/** The 5 service data sources, in map-overwrite order (Deep Reading last so
+ *  its "เจาะลึกแบบจุกๆ" copy wins over the duplicate in Q and A). `name` is
+ *  the admin-facing table choice; createRow targets these instead of the env. */
+const SERVICE_DBS: { id: string; name: string }[] = [
+  { id: "37d60f08-01b5-808d-8cab-000b326872a3", name: "Q and A" },
+  { id: "37d60f08-01b5-81db-ab71-000b6f3650b1", name: "Relationship Package" },
+  { id: "37d60f08-01b5-8124-94ae-000b8909ffd6", name: "Special Pack" },
+  { id: "37d60f08-01b5-81b7-8c3b-000b9e7244d7", name: "Call Pack" },
+  { id: "2719f48c-6de7-4237-accf-d4631836de18", name: "Deep Reading" },
+];
+
+/** Tablenames the admin form offers for a new service (mirrors SERVICE_DBS names). */
+export const SERVICE_TABLES = SERVICE_DBS.map((d) => d.name);
+
+/** Pure helper: pick the data source a service row must be created under, from
+ *  the row's `table` (the admin-chosen SERVICE_TABLES name). Null => no match. */
+export function resolveServiceDataSource(row: Row): string | null {
+  const t = row["table"];
+  if (typeof t !== "string") return null;
+  return SERVICE_DBS.find((d) => d.name === t)?.id ?? null;
+}
+
+/** Strip HTML tags ("<p>…</p>", "<br>") from Notion rich text. */
+const stripHtml = (s: string): string =>
+  s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+
 export async function getServicesAll(): Promise<Row[]> {
   try {
-    const pages = await queryAll(DB.services, {
-      sorts: [{ property: SVC.order, direction: "ascending" }],
-    });
-    return pages.map((p) => ({
-      id: p.id,
-      slug: qrich(p, SVC.slug),
-      name: qtitle(p, SVC.name),
-      short_desc: qrich(p, SVC.shortDesc),
-      description: qrich(p, SVC.description),
-      price: qrich(p, SVC.price),
-      duration_min: qnum(p, SVC.duration),
-      order: qnum(p, SVC.order),
-      active: qbool(p, SVC.active),
-    }));
+    const pages = (
+      await Promise.all(
+        SERVICE_DBS.map((d) =>
+          queryAll(d.id).then((ps) => ps.map((p) => ({ p, table: d.name })))
+        )
+      )
+    ).flat();
+
+    // Dedupe by slug, later DB overwriting earlier (Deep Reading's
+    // "เจาะลึกแบบจุกๆ" replaces the Q and A copy); drop rows not in the map.
+    const bySlug = new Map<string, Row>();
+    for (const { p, table } of pages) {
+      const name = qtitle(p, "Name").replace(/\s+/g, " ").trim();
+      const spec = SERVICE_SLUGS[name];
+      if (!spec) continue;
+      const due = stripHtml(qrich(p, "Due"));
+      const detail = stripHtml(qrich(p, "Detail"));
+      bySlug.set(spec.slug, {
+        id: p.id,
+        table,
+        slug: spec.slug,
+        name,
+        short_desc: detail,
+        description: due ? `${detail}\n\n${due}` : detail,
+        due,
+        price: qnum(p, "Price")?.toString() ?? "",
+        duration_min: null,
+        order: spec.order,
+        active: true,
+      });
+    }
+    return [...bySlug.values()].sort((a, b) => (a.order as number) - (b.order as number));
   } catch {
     return [];
   }
@@ -221,14 +265,12 @@ function propsFor(table: "services" | "categories" | "articles" | "bookings", ro
   };
   switch (table) {
     case "services":
+      // Services live in the 5 shared tables (SERVICE_DBS): Name / Price /
+      // Detail / Due — not the legacy Services DB columns.
       set("name", SVC.name, { title: rt(row.name) });
-      set("slug", SVC.slug, { rich_text: rt(row.slug) });
-      set("short_desc", SVC.shortDesc, { rich_text: rt(row.short_desc) });
-      set("description", SVC.description, { rich_text: rt(row.description) });
-      set("price", SVC.price, { rich_text: rt(row.price) });
-      set("duration_min", SVC.duration, { number: num(row.duration_min) });
-      set("order", SVC.order, { number: num(row.order) });
-      set("active", SVC.active, { checkbox: Boolean(row.active) });
+      set("price", SVC.price, { number: num(row.price) });
+      set("description", SVC.detail, { rich_text: rt(row.description) });
+      set("due", SVC.due, { rich_text: rt(row.due) });
       break;
     case "categories":
       set("name", CAT.name, { title: rt(row.name) });
@@ -263,8 +305,16 @@ export async function createRow(
 ): Promise<void> {
   // env values are data-source ids (read path uses dataSources.query too);
   // pages must be created under the data source, not a database.
+  let ds: string;
+  if (table === "services") {
+    const id = resolveServiceDataSource(row);
+    if (!id) throw new Error("กรุณาเลือกตารางบริการ");
+    ds = id;
+  } else {
+    ds = DB[table];
+  }
   await requireNotion().pages.create({
-    parent: { data_source_id: DB[table] },
+    parent: { data_source_id: ds },
     properties: propsFor(table, row) as NonNullable<
       CreatePageParameters["properties"]
     >,

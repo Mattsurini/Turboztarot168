@@ -13,11 +13,22 @@ export type BookingRow = {
   created_at: string | null;
 };
 
+export type ServiceOption = { name: string; table: string };
+
 const STATUSES = ["รับคิวแล้ว", "กำลังทำนาย", "ส่งคำทำนายแล้ว"];
 
-export default function QueueManager({ bookings }: { bookings: BookingRow[] }) {
+export default function QueueManager({
+  bookings,
+  services,
+}: {
+  bookings: BookingRow[];
+  services?: ServiceOption[];
+}) {
   const [message, setMessage] = useState("");
   const [pending, startTransition] = useTransition();
+
+  // Distinct tables in first-seen order, for the grouped service optgroups.
+  const tables = services ? [...new Set(services.map((s) => s.table))] : [];
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -56,37 +67,89 @@ export default function QueueManager({ bookings }: { bookings: BookingRow[] }) {
       </p>
       {message && <p className="mt-2 text-sm text-foreground/70">{message}</p>}
 
-      <form onSubmit={submit} className="mt-6 grid gap-3 rounded-2xl border border-gold/25 bg-panel p-6 sm:grid-cols-4">
-        <input name="name" required placeholder="ชื่อลูกค้า" className="rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
-        <input name="service_name" placeholder="บริการ" className="rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
-        <input name="scheduled_at" type="datetime-local" className="rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none" />
-        <select name="status" defaultValue="รับคิวแล้ว" className="rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
-          {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
-        <button type="submit" disabled={pending} className="rounded-full bg-violet-700 px-5 py-2 text-sm font-semibold text-black disabled:opacity-60 sm:col-span-4 sm:justify-self-start">
-          + เพิ่มคิว
-        </button>
-      </form>
-
-      <div className="mt-6 space-y-3">
-        {bookings.length === 0 && <p className="text-foreground/50">ยังไม่มีคิว</p>}
-        {bookings.map((b) => (
-          <div key={b.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gold/25 bg-panel px-4 py-3">
-            <div>
-              <p className="font-semibold">{(b.name || "ไม่ระบุชื่อ")}{b.service_name ? <span className="text-violet-700">: {b.service_name}</span> : null}</p>
-              <p className="text-sm text-foreground/50">
-                {b.scheduled_at ? `${formatDate(b.scheduled_at)} ${formatTime(b.scheduled_at)}` : "ยังไม่ระบุเวลา"}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <select value={b.status} onChange={(e) => changeStatus(b, e.target.value)}
-                className="rounded-lg border border-gold/30 px-3 py-1.5 text-sm focus:border-violet-500 focus:outline-none">
-                {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+      <section className="queue-form" aria-label="เพิ่มคิว">
+        <h2>เพิ่มคิว</h2>
+        <form onSubmit={submit}>
+          <div className="field">
+            <label htmlFor="q-name">ชื่อลูกค้า</label>
+            <input id="q-name" name="name" type="text" required placeholder="ชื่อลูกค้า" disabled={pending} />
+          </div>
+          <div className="field">
+            <label htmlFor="q-service">บริการ</label>
+            <div className="select-wrap">
+              <select id="q-service" name="service_name" disabled={pending}>
+                <option value="">เลือกบริการ</option>
+                {tables.map((t) => (
+                  <optgroup key={t} label={t}>
+                    {(services ?? []).filter((s) => s.table === t).map((s) => (
+                      <option key={s.name} value={s.name}>{s.name}</option>
+                    ))}
+                  </optgroup>
+                ))}
               </select>
-              <button onClick={() => remove(b)} className="rounded-full border border-red-200 px-3 py-1 text-sm text-red-600">ลบ</button>
             </div>
           </div>
-        ))}
+          <div className="field">
+            <label htmlFor="q-time">วันเวลา</label>
+            <input id="q-time" name="scheduled_at" type="datetime-local" disabled={pending} />
+          </div>
+          <div className="field">
+            <label htmlFor="q-status">สถานะ</label>
+            <div className="select-wrap">
+              <select id="q-status" name="status" defaultValue="รับคิวแล้ว" disabled={pending}>
+                {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+          </div>
+          <button type="submit" className="btn btn--gold" disabled={pending}>+ เพิ่มคิว</button>
+        </form>
+      </section>
+
+      <div className="table-wrap">
+        <table className="table" aria-label="รายการคิว">
+          <thead>
+            <tr>
+              <th>ลูกค้า</th>
+              <th>บริการ</th>
+              <th>วันที่</th>
+              <th>สถานะ</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bookings.length === 0 && (
+              <tr>
+                <td colSpan={5}>ยังไม่มีคิว</td>
+              </tr>
+            )}
+            {bookings.map((b) => (
+              <tr key={b.id}>
+                <td data-label="ลูกค้า">{b.name || "ไม่ระบุชื่อ"}</td>
+                <td data-label="บริการ">{b.service_name}</td>
+                <td data-label="วันที่">
+                  {b.scheduled_at ? `${formatDate(b.scheduled_at)} ${formatTime(b.scheduled_at)}` : "ยังไม่ระบุเวลา"}
+                </td>
+                <td data-label="สถานะ">
+                  <div className="select-wrap">
+                    <select
+                      aria-label="สถานะ"
+                      value={b.status}
+                      onChange={(e) => changeStatus(b, e.target.value)}
+                      disabled={pending}
+                    >
+                      {[...new Set([...STATUSES, b.status])].map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                </td>
+                <td data-label="จัดการ">
+                  <button type="button" className="btn--del" onClick={() => remove(b)} disabled={pending}>ลบ</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

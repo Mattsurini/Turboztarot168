@@ -23,6 +23,7 @@ type ServiceRow = {
   duration_min: number | null;
   order: number | null;
   active: boolean | null;
+  due: string | null;
 };
 
 function mapService(r: ServiceRow): Service {
@@ -36,6 +37,7 @@ function mapService(r: ServiceRow): Service {
     duration_min: r.duration_min ?? 45,
     order: r.order ?? 0,
     active: r.active ?? true,
+    due: r.due ?? "",
   };
 }
 

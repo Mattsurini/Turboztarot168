@@ -14,6 +14,7 @@ export const seedServices: Service[] = [
     duration_min: 45,
     order: 1,
     active: true,
+    due: "",
   },
   {
     id: "s2",
@@ -26,6 +27,7 @@ export const seedServices: Service[] = [
     duration_min: 60,
     order: 2,
     active: true,
+    due: "",
   },
   {
     id: "s3",
@@ -38,6 +40,7 @@ export const seedServices: Service[] = [
     duration_min: 60,
     order: 3,
     active: true,
+    due: "",
   },
   {
     id: "s4",
@@ -50,6 +53,7 @@ export const seedServices: Service[] = [
     duration_min: 60,
     order: 4,
     active: true,
+    due: "",
   },
 ];
 

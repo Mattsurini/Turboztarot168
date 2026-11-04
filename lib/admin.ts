@@ -10,20 +10,28 @@ import crypto from "node:crypto";
 const COOKIE = "tz_admin";
 const MAX_AGE = 7 * 24 * 3600; // 7 days
 
-const secret = process.env.ADMIN_COOKIE_SECRET || "";
+/** Read ADMIN_COOKIE_SECRET at call time; fail closed unless >= 32 chars. */
+function currentSecret(): string {
+  const s = process.env.ADMIN_COOKIE_SECRET || "";
+  return s.length >= 32 ? s : "";
+}
 
-function hmac(data: string): string {
+function hmac(data: string, secret: string): string {
   return crypto.createHmac("sha256", secret).update(data).digest("base64url");
 }
 
 /** Server-only: is there a valid admin session? Mirrors the old getAdminUser(). */
 export async function getAdminUser() {
   const token = (await cookies()).get(COOKIE)?.value;
+  const secret = currentSecret();
+  if (!secret) return null;
   if (!token) return null;
   const [payload, sig] = token.split(".");
   if (!payload || !sig) return null;
-  if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(hmac(payload))))
-    return null;
+  const sigBuf = Buffer.from(sig);
+  const expBuf = Buffer.from(hmac(payload, secret));
+  if (sigBuf.length !== expBuf.length) return null;
+  if (!crypto.timingSafeEqual(sigBuf, expBuf)) return null;
   let exp = 0;
   try {
     exp = Number(JSON.parse(Buffer.from(payload, "base64url").toString("utf8")).exp);
@@ -36,10 +44,12 @@ export async function getAdminUser() {
 
 /** Sign a session cookie for a freshly logged-in admin. */
 export async function createAdminSession() {
+  const secret = currentSecret();
+  if (!secret) throw new Error("ระบบแอดมินยังไม่ได้ตั้งค่า");
   const payload = Buffer.from(
     JSON.stringify({ exp: Date.now() + MAX_AGE * 1000 })
   ).toString("base64url");
-  (await cookies()).set(COOKIE, `${payload}.${hmac(payload)}`, {
+  (await cookies()).set(COOKIE, `${payload}.${hmac(payload, secret)}`, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

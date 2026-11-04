@@ -33,23 +33,21 @@ export default function CategoriesManager({ categories }: { categories: Category
       <h2 className="text-2xl font-bold">จัดการหมวดหมู่บทความ</h2>
       {message && <p className="mt-2 text-sm text-foreground/70">{message}</p>}
 
-      <form onSubmit={submit} className="mt-6 flex max-w-md gap-2">
+      <form onSubmit={submit} className="add-row mt-6 max-w-md">
         <input
           name="name"
           required
           placeholder="ชื่อหมวดหมู่"
-          className="flex-1 rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
         />
         <input
           name="slug"
           required
           placeholder="slug"
-          className="flex-1 rounded-lg border border-gold/30 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
         />
         <button
           type="submit"
           disabled={pending}
-          className="rounded-full bg-violet-700 px-5 py-2 text-sm font-semibold text-black disabled:opacity-60"
+          className="btn btn--gold btn--add"
         >
           เพิ่ม
         </button>

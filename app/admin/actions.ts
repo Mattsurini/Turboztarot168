@@ -12,7 +12,9 @@ import {
   createRow,
   deleteRow,
   updateRow,
+  SERVICE_TABLES,
 } from "@/lib/notion-data";
+import { localInputToBangkokISO } from "@/lib/format";
 
 /*
  * Admin mutations. Every action re-verifies the admin session cookie before
@@ -50,7 +52,11 @@ export async function loginAction(formData: FormData): Promise<Result> {
   if (!checkAdminPassword(password)) {
     return { ok: false, error: "รหัสผ่านไม่ถูกต้อง" };
   }
-  await createAdminSession();
+  try {
+    await createAdminSession();
+  } catch (e) {
+    return { ok: false, error: friendlyError(e) };
+  }
   redirect("/admin");
 }
 
@@ -66,16 +72,19 @@ export async function upsertService(formData: FormData): Promise<Result> {
   if (!guard.ok) return guard;
   const id = formData.get("id") as string | null;
   const row = {
-    slug: String(formData.get("slug") || "").trim(),
+    table: String(formData.get("table") || "").trim(),
     name: String(formData.get("name") || "").trim(),
     short_desc: String(formData.get("short_desc") || "").trim(),
     description: String(formData.get("description") || "").trim(),
-    price: String(formData.get("price") || "").trim(),
+    due: String(formData.get("due") || "").trim(),
+    price: Number(formData.get("price") || 0),
     duration_min: Number(formData.get("duration_min") || 45),
     order: Number(formData.get("order") || 0),
     active: formData.get("active") === "on",
   };
-  if (!row.slug || !row.name) return { ok: false, error: "ต้องกรอกชื่อและ slug" };
+  if (!row.name) return { ok: false, error: "ต้องกรอกชื่อบริการ" };
+  if (!id && !SERVICE_TABLES.includes(row.table))
+    return { ok: false, error: "กรุณาเลือกตารางบริการ" };
   try {
     if (id) await updateRow("services", id, row);
     else await createRow("services", row);
@@ -178,7 +187,7 @@ export async function addBooking(formData: FormData): Promise<Result> {
   const row = {
     name: String(formData.get("name") || "").trim(),
     service_name: String(formData.get("service_name") || "").trim(),
-    scheduled_at: (String(formData.get("scheduled_at") || "") || null) as string | null,
+    scheduled_at: localInputToBangkokISO(String(formData.get("scheduled_at") || "")),
     status: String(formData.get("status") || "รับคิวแล้ว"),
   };
   if (!row.name) return { ok: false, error: "ต้องกรอกชื่อลูกค้า" };
