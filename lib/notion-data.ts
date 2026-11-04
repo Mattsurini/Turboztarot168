@@ -160,13 +160,17 @@ const stripHtml = (s: string): string =>
 export async function getServicesAll(): Promise<Row[]> {
   try {
     const pages = (
-      await Promise.all(SERVICE_DBS.map((d) => queryAll(d.id)))
+      await Promise.all(
+        SERVICE_DBS.map((d) =>
+          queryAll(d.id).then((ps) => ps.map((p) => ({ p, table: d.name })))
+        )
+      )
     ).flat();
 
     // Dedupe by slug, later DB overwriting earlier (Deep Reading's
     // "เจาะลึกแบบจุกๆ" replaces the Q and A copy); drop rows not in the map.
     const bySlug = new Map<string, Row>();
-    for (const p of pages) {
+    for (const { p, table } of pages) {
       const name = qtitle(p, "Name").replace(/\s+/g, " ").trim();
       const spec = SERVICE_SLUGS[name];
       if (!spec) continue;
@@ -174,6 +178,7 @@ export async function getServicesAll(): Promise<Row[]> {
       const detail = stripHtml(qrich(p, "Detail"));
       bySlug.set(spec.slug, {
         id: p.id,
+        table,
         slug: spec.slug,
         name,
         short_desc: detail,

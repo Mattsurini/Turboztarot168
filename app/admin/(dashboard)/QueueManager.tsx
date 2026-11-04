@@ -13,9 +13,17 @@ export type BookingRow = {
   created_at: string | null;
 };
 
+export type ServiceOption = { name: string; table: string };
+
 const STATUSES = ["รับคิวแล้ว", "กำลังทำนาย", "ส่งคำทำนายแล้ว"];
 
-export default function QueueManager({ bookings }: { bookings: BookingRow[] }) {
+export default function QueueManager({
+  bookings,
+  services,
+}: {
+  bookings: BookingRow[];
+  services?: ServiceOption[];
+}) {
   const [message, setMessage] = useState("");
   const [pending, startTransition] = useTransition();
 
