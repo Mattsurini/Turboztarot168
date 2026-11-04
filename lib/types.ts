@@ -8,6 +8,7 @@ export type Service = {
   duration_min: number;
   order: number;
   active: boolean;
+  due: string;
 };
 
 export type Category = {
