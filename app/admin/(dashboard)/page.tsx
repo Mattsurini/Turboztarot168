@@ -29,24 +29,28 @@ export default async function AdminDashboardPage() {
   ];
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold">แดชบอร์ด</h2>
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+    <>
+      <section className="stats" aria-label="ภาพรวม">
         {cards.map((c) => (
-          <Link
-            key={c.href}
-            href={c.href}
-            className="rounded-2xl border border-gold/25 bg-panel p-6 shadow-sm"
-          >
-            <p className="text-3xl font-bold">{c.value}</p>
-            <p className="mt-1 text-foreground/60">{c.label}</p>
+          <Link key={c.href} href={c.href} className="stat">
+            <span className="stat__label">{c.label}</span>
+            <div className="stat__num">{c.value}</div>
           </Link>
         ))}
-      </div>
-      <p className="mt-6 max-w-2xl text-sm text-foreground/60">
-        คิวจะถูกจองผ่าน LINE ผู้ดูแลจะใช้หน้านี้บันทึกและเปลี่ยนสถานะการนัดหมายเอง
-        ไม่มีการยืนยันอัตโนมัติ
+      </section>
+      <p className="note">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#06c755"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          aria-hidden="true"
+        >
+          <path d="M3 6h18v9H8l-5 4V6z" />
+        </svg>
+        การจองเข้ามาทาง LINE และผู้ดูแลบันทึกด้วยตนเอง
       </p>
-    </div>
+    </>
   );
 }
