@@ -22,9 +22,9 @@ function hmac(data: string, secret: string): string {
 
 /** Server-only: is there a valid admin session? Mirrors the old getAdminUser(). */
 export async function getAdminUser() {
+  const token = (await cookies()).get(COOKIE)?.value;
   const secret = currentSecret();
   if (!secret) return null;
-  const token = (await cookies()).get(COOKIE)?.value;
   if (!token) return null;
   const [payload, sig] = token.split(".");
   if (!payload || !sig) return null;
