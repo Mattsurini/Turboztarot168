@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getBookingsForCalendar } from "@/lib/data";
 import { toDateKey } from "@/lib/format";
 import { lineOaUrl } from "@/lib/site";
@@ -56,63 +57,82 @@ export default async function QueueCalendar() {
   const chipClass = (status: string) =>
     status === "กำลังทำนาย" ? "chip chip--doing" : "chip chip--wait";
 
+  const legend = "แถบสีแดง: รอคำทำนาย · แถบสีเหลือง: กำลังทำนาย";
+
   return (
-    <section className="section section--dim">
-      <div className="wrap">
-        <div className="shead">
-          <p className="kicker">ดูว่าวันนี้ใครยังรออยู่บ้าง · จองผ่าน LINE โดยตรง</p>
-          <h2>คิวดูดวง</h2>
-          <div className="rule"></div>
-        </div>
-        <div className="panel">
-          <div className="panel__head">
-            <div className="glyph-line">✦ ✧ ✦</div>
-            <h3>{monthName}</h3>
-            <p>แถบสีแดง: รอคำทำนาย · แถบสีเหลือง: กำลังทำนาย</p>
-          </div>
-          <table className="cal" aria-label="ปฏิทินคิวดูดวงประจำเดือน">
-            <thead>
-              <tr>
-                {daysOfWeek.map((d) => (
-                  <th key={d}>{d}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {Array.from({ length: 6 }, (_, r) => (
-                <tr key={r}>
-                  {cells.slice(r * 7, r * 7 + 7).map((date) => {
-                    const key = toDateKey(date.toISOString());
-                    const dayBookings = byDay.get(key);
-                    const inMonth = bkk(date).getMonth() + 1 === month;
-                    return (
-                      <td key={key} className={inMonth ? "" : "out"}>
-                        <span className="dow">{bkk(date).getDate()}</span>
-                        {dayBookings?.map((b) => (
-                          <span key={b.id} className={chipClass(b.status)}>
-                            {b.name || "ไม่ระบุชื่อ"}
-                          </span>
-                        ))}
-                      </td>
-                    );
-                  })}
+    <>
+      <section className="hero hero--page">
+        <div className="halo"></div>
+        <p className="hero__eyebrow">ดูว่าวันนี้ใครยังรออยู่บ้าง · จองผ่าน LINE โดยตรง</p>
+        <h1 className="display-latin" style={{ fontSize: 64 }}>
+          คิวดูดวง
+        </h1>
+        <p className="hero__sub" style={{ maxWidth: 640 }}>
+          {legend}
+        </p>
+      </section>
+
+      <section className="section">
+        <div className="wrap">
+          <div className="panel">
+            <div className="panel__head">
+              <div className="glyph-line">✦ ✧ ✦</div>
+              <h3>{monthName}</h3>
+              <p>{legend}</p>
+            </div>
+            <table className="cal" aria-label="ปฏิทินคิวดูดวงประจำเดือน">
+              <thead>
+                <tr>
+                  {daysOfWeek.map((d) => (
+                    <th key={d}>{d}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="legend">
-            <span><span className="dot dot--wait"></span>รอคำทำนาย</span>
-            <span><span className="dot dot--doing"></span>กำลังทำนาย</span>
+              </thead>
+              <tbody>
+                {Array.from({ length: 6 }, (_, r) => (
+                  <tr key={r}>
+                    {cells.slice(r * 7, r * 7 + 7).map((date) => {
+                      const key = toDateKey(date.toISOString());
+                      const dayBookings = byDay.get(key);
+                      const inMonth = bkk(date).getMonth() + 1 === month;
+                      return (
+                        <td key={key} className={inMonth ? "" : "out"}>
+                          <span className="dow">{bkk(date).getDate()}</span>
+                          {dayBookings?.map((b) => (
+                            <span key={b.id} className={chipClass(b.status)}>
+                              {b.name || "ไม่ระบุชื่อ"}
+                            </span>
+                          ))}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="legend">
+              <span><span className="dot dot--wait"></span>รอคำทำนาย</span>
+              <span><span className="dot dot--doing"></span>กำลังทำนาย</span>
+            </div>
+          </div>
+
+          <div className="join">
+            <div className="glyph-line">✦ จองคิวดูดวงผ่าน LINE ✦</div>
+            <p>
+              การกดปุ่มจะเปิด LINE พร้อมข้อความสำเร็จรูปให้คุณตรวจสอบและกดส่งเอง
+              พี่หมอจะนัดวัน/เวลาที่แน่นอนผ่าน LINE และบันทึกลงคิว
+            </p>
+            <div className="row">
+              <a className="btn btn--line" href={lineOaUrl("สวัสดีครับ/ค่ะ ขอจองคิวดูดวงค่ะ")}>
+                จองคิวดูดวงผ่าน LINE
+              </a>
+              <Link className="btn btn--ghost" href="/services">
+                เลือกบริการดูดวง
+              </Link>
+            </div>
           </div>
         </div>
-        <div className="join">
-          <div className="glyph-line">✦ จองคิวดูดวงผ่าน LINE โดยตรง ✦</div>
-          <p>พี่หมอจะนัดวัน/เวลาที่แน่นอนผ่าน LINE และบันทึกลงคิวให้คุณ</p>
-          <a className="btn btn--line" href={lineOaUrl("สวัสดีครับ/ค่ะ ขอจองคิวดูดวงค่ะ")}>
-            จองคิวดูดวงผ่าน LINE
-          </a>
-        </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
