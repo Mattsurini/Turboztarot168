@@ -50,6 +50,11 @@ export default async function ArticlesPage() {
           </div>
 
           <div className="mag">
+            {articles.length === 0 && (
+              <p className="kicker" style={{ color: "var(--muted)" }}>
+                ยังไม่มีบทความในตอนนี้ — เร็วๆ นี้พี่หมอเทอร์โบจะมาเล่าเรื่องดวงให้ฟังนะคะ
+              </p>
+            )}
             {articles.map((a) => (
               <article key={a.id} className="art art--feature">
                 <div className="art__content">

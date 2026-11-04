@@ -178,6 +178,11 @@ export default async function HomePage() {
             <div className="rule"></div>
           </div>
           <div className="mag">
+            {articles.length === 0 && (
+              <p className="kicker" style={{ color: "var(--muted)" }}>
+                ยังไม่มีบทความในตอนนี้ — เร็วๆ นี้พี่หมอเทอร์โบจะมาเล่าเรื่องดวงให้ฟังนะคะ
+              </p>
+            )}
             {articles.map((a) => (
               <article className="art" key={a.slug}>
                 <div className="art__meta">
