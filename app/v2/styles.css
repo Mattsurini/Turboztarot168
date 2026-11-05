@@ -330,7 +330,7 @@ h1, h2, h3, h4 { font-family: var(--font-thai-display); font-weight: 600; color:
 /* ============ PART 4 — RESPONSIVE (390) + REDUCED MOTION ============ */
 @media (max-width: 1080px) {
   .services { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
-  .hero h1.display-latin { font-size: 72px; }
+  .hero h1.display-latin { font-size: clamp(33px, 7.6vw, 72px); }
   .card { width: 156px; height: 244px; }
   .card--0 { transform: translateX(-220px) rotate(-16deg); }
   .card--1 { transform: translateX(-110px) rotate(-8deg); }
@@ -454,3 +454,48 @@ h1, h2, h3, h4 { font-family: var(--font-thai-display); font-weight: 600; color:
 .svccard__link:hover { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 1080px) { .svcgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; } }
 @media (max-width: 640px) { .svcgrid { grid-template-columns: minmax(0, 1fr); } .hero--page h1 { font-size: 40px; } .moonrow svg { width: 260px; } }
+
+/* ---- Info pages (about / contact / terms) — AETHEROS editorial prose ---- */
+.info { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 22px; }
+.info__card {
+  max-width: 780px; margin: 0 auto; width: 100%;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(197,142,59,0.14), transparent 60%),
+    linear-gradient(180deg, var(--panel-warm) 0%, var(--panel) 100%);
+  border: 1px solid var(--rule);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 26px 60px -30px rgba(0,0,0,0.8);
+  padding: 56px 64px 52px;
+  text-align: left;
+}
+.info__card h2 {
+  font-family: var(--font-thai-display); font-weight: 700; font-size: 30px;
+  color: var(--gold); letter-spacing: 0.02em; margin-bottom: 18px;
+}
+.info__card p { font-family: var(--font-thai); font-size: 16px; line-height: 1.95; color: var(--ink-soft); }
+.info__card p + p { margin-top: 18px; }
+.info__rule { margin: 30px 0; width: 100%; height: 1px; background: linear-gradient(90deg, var(--rule), transparent); }
+/* Legal list: gold numerals instead of bullets, ruled rows.
+   Numeral is absolutely positioned (NOT a grid/flex item — grid itemifies
+   inline children like <strong>, splitting the text into 46px cells). */
+.terms { list-style: none; counter-reset: t; display: flex; flex-direction: column; margin: 0; }
+.terms li {
+  counter-increment: t;
+  position: relative;
+  padding: 18px 0 18px 46px;
+  border-bottom: 1px solid rgba(197,142,59,0.16);
+  font-family: var(--font-thai); font-size: 16px; line-height: 1.85; color: var(--ink-soft);
+}
+.terms li::before {
+  content: counter(t, thai); /* Thai numerals official list counter */
+  position: absolute; left: 0; top: 18px; width: 46px;
+  font-family: var(--font-thai-display); font-weight: 700; font-size: 15px;
+  color: var(--gold); text-shadow: var(--glow-gold);
+  padding-top: 2px;
+}
+.terms li strong { color: var(--ivory); font-weight: 600; }
+.terms .note { display: block; margin-top: 8px; font-size: 13.5px; color: var(--ink-faint); }
+@media (max-width: 640px) {
+  .info__card { padding: 34px 22px 32px; }
+  .terms li { padding-left: 34px; }
+  .terms li::before { width: 34px; }
+}

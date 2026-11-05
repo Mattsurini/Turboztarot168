@@ -8,28 +8,46 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-      <h1 className="text-4xl font-bold">ติดต่อ</h1>
-      <p className="mt-4 text-foreground/70">
-        ช่องทางหลักในการติดต่อและจองคิวดูดวงคือ LINE Official Account
-      </p>
-      <div className="mt-8 rounded-2xl border border-gold/25 bg-panel p-6">
-        <h2 className="text-lg font-bold">ช่องทางติดต่อ</h2>
-        <ul className="mt-4 space-y-3 text-foreground/80">
-          <li className="flex items-center justify-between rounded-xl bg-panel2 px-4 py-3">
-            <span>LINE Official Account</span>
-            <a
-              href={lineOaUrl("สวัสดีครับ/ค่ะ ต้องการสอบถามเรื่องดูดวงค่ะ")}
-              className="rounded-full bg-line px-4 py-1.5 text-sm font-medium text-white"
-            >
-              ทัก LINE
-            </a>
-          </li>
-        </ul>
-        <p className="mt-4 text-sm text-foreground/50">
-          เวลาทำการ: รับคิวทุกวัน นัดวัน/เวลาแน่นอนผ่าน LINE
+    <>
+      <section className="hero hero--page">
+        <div className="halo"></div>
+        <p className="hero__eyebrow">ช่องทางติดต่อ</p>
+        <h1 className="display-latin" style={{ fontSize: 64 }}>
+          ติดต่อ
+        </h1>
+        <p className="hero__sub" style={{ maxWidth: 720 }}>
+          ช่องทางหลักในการติดต่อและจองคิวดูดวงคือ LINE Official Account
         </p>
-      </div>
-    </section>
+      </section>
+
+      <section className="section">
+        <div className="wrap">
+          <div className="info">
+            <div className="info__card">
+              <h2>ช่องทางติดต่อ</h2>
+              <div className="svc__list" style={{ marginTop: 8 }}>
+                <div className="svc__row" style={{ alignItems: "center" }}>
+                  <span className="svc__row-name" style={{ fontFamily: "var(--font-thai)" }}>
+                    LINE Official Account
+                    <span className="svc__due">ตอบกลับโดยตรงจากพี่หมอ</span>
+                  </span>
+                  <a
+                    href={lineOaUrl("สวัสดีครับ/ค่ะ ต้องการสอบถามเรื่องดูดวงค่ะ")}
+                    className="btn btn--line"
+                    style={{ minHeight: 44, padding: "0 22px", fontSize: 15, flexShrink: 0 }}
+                  >
+                    ทัก LINE
+                  </a>
+                </div>
+              </div>
+              <div className="info__rule"></div>
+              <p style={{ fontSize: 14, color: "var(--ink-faint)" }}>
+                เวลาทำการ: รับคิวทุกวัน นัดวัน/เวลาแน่นอนผ่าน LINE
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

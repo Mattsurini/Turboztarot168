@@ -133,7 +133,8 @@ async function queryAll(
 
 /** The 5 service data sources, in map-overwrite order (Deep Reading last so
  *  its "เจาะลึกแบบจุกๆ" copy wins over the duplicate in Q and A). `name` is
- *  the admin-facing table choice; createRow targets these instead of the env. */
+ *  the admin-facing table choice; createRow targets these instead of the env.
+ *  IDs verified against the site integration "Turboz" (2026-11-05). */
 const SERVICE_DBS: { id: string; name: string }[] = [
   { id: "37d60f08-01b5-808d-8cab-000b326872a3", name: "Q and A" },
   { id: "37d60f08-01b5-81db-ab71-000b6f3650b1", name: "Relationship Package" },
