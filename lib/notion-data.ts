@@ -183,7 +183,7 @@ export async function getServicesAll(): Promise<Row[]> {
         slug: spec.slug,
         name,
         short_desc: detail,
-        description: due ? `${detail}\n\n${due}` : detail,
+        description: detail,
         due,
         price: qnum(p, "Price")?.toString() ?? "",
         duration_min: null,
